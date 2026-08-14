@@ -10,9 +10,8 @@ import {
   Tooltip,
 } from "chart.js"
 import { Line } from "react-chartjs-2"
-import { RefreshCw } from "lucide-react"
+import { RefreshCw, TrendingDown, TrendingUp } from "lucide-react"
 import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -72,6 +71,19 @@ export default function Dashboard() {
       ? `${(status.r2_test * 100).toFixed(1)}%`
       : "-"
 
+  const withActual = (history.data ?? []).filter((h) => h.actual !== null)
+  const lastActual = withActual.length > 0 ? withActual[withActual.length - 1].actual : null
+  const delta =
+    pred?.prediksi != null && lastActual != null
+      ? ((pred.prediksi - lastActual) / lastActual) * 100
+      : null
+
+  const metrics = [
+    { label: "R² test", value: r2 },
+    { label: "MAPE", value: mape },
+    { label: "Trained s/d", value: formatPeriode(status?.trained_until) },
+  ]
+
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -99,123 +111,143 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="border-l-4 border-l-primary">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Prediksi Revenue
-            </CardTitle>
-            <CardDescription>Bulan {pred?.periode ? formatPeriode(pred.periode) : "-"}</CardDescription>
+      {/* Stat band: flat, hairline-divided, type does the hierarchy */}
+      <Card className="shadow-none">
+        <CardContent className="px-6 py-7 lg:px-8">
+          <div className="grid gap-8 md:grid-cols-4 md:gap-0 md:divide-x md:divide-border">
+            <div className="md:pr-8">
+              <div className="flex items-baseline justify-between gap-4">
+                <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                  Prediksi Revenue
+                </p>
+                {pred?.periode && (
+                  <p className="text-xs font-medium text-muted-foreground tabular-nums">
+                    {formatPeriode(pred.periode)}
+                  </p>
+                )}
+              </div>
+              {current.isLoading ? (
+                <Skeleton className="mt-3 h-12 w-56" />
+              ) : (
+                <>
+                  <p className="mt-3 text-4xl font-semibold tracking-tight tabular-nums lg:text-5xl">
+                    {formatRupiah(pred?.prediksi)}
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    {delta !== null && (
+                      <p className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
+                        {delta >= 0 ? (
+                          <TrendingUp className="size-4" />
+                        ) : (
+                          <TrendingDown className="size-4" />
+                        )}
+                        {Math.abs(delta).toFixed(1)}% vs bulan lalu
+                      </p>
+                    )}
+                    <p className="text-sm text-muted-foreground">
+                      Rentang {formatRupiah(pred?.lower)} - {formatRupiah(pred?.upper)} ribu Rp
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {metrics.map((m) => (
+              <div key={m.label} className="md:px-8">
+                <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
+                {current.isLoading ? (
+                  <Skeleton className="mt-2 h-12 w-32" />
+                ) : (
+                  <p className="mt-2 text-4xl font-bold tracking-tight tabular-nums">{m.value}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Card className="shadow-none lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base">Penjualan Bulanan</CardTitle>
+            <CardDescription>Aktual vs prediksi, dalam ribuan rupiah</CardDescription>
           </CardHeader>
           <CardContent>
-            {current.isLoading ? (
-              <Skeleton className="h-9 w-44" />
+            {history.isLoading ? (
+              <Skeleton className="h-72 w-full" />
             ) : (
-              <>
-                <p className="text-3xl font-semibold tracking-tight tabular-nums">
-                  {formatRupiah(pred?.prediksi)}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Rentang: {formatRupiah(pred?.lower)} - {formatRupiah(pred?.upper)} ribu Rp
-                </p>
-              </>
+              <div className="h-72">
+                <Line
+                  data={chartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: "index" },
+                    scales: {
+                      x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 8 },
+                      },
+                      y: {
+                        beginAtZero: false,
+                        grid: { color: "oklch(0.905 0.008 85 / 0.4)" },
+                        ticks: { maxTicksLimit: 5 },
+                      },
+                    },
+                    plugins: {
+                      legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } },
+                      tooltip: {
+                        callbacks: {
+                          label: (ctx) => `${ctx.dataset.label}: ${formatRupiah(Number(ctx.raw))}`,
+                        },
+                      },
+                    },
+                  }}
+                />
+              </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Akurasi Model Revenue
-            </CardTitle>
-            <CardDescription>Evaluasi test set terakhir</CardDescription>
+        <Card className="shadow-none">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base">Top Produk</CardTitle>
+            <CardDescription>
+              {pred?.periode ? `Periode ${formatPeriode(pred.periode)}` : "Periode berikutnya"}
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            {current.isLoading ? (
-              <Skeleton className="h-9 w-32" />
-            ) : (
-              <>
-                <p className="text-3xl font-semibold tracking-tight tabular-nums">
-                  R² {r2}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  MAPE {mape} · trained s/d {status?.trained_until ?? "-"}
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="sm:col-span-2 lg:col-span-1">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Top Produk
-            </CardTitle>
-            <CardDescription>Bulan {pred?.periode ? formatPeriode(pred.periode) : "-"}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-4">
             {current.data?.top_products_status === "not_trained" ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="py-6 text-center text-sm text-muted-foreground">
                 {isAdmin ? "Jalankan retrain untuk menghasilkan top produk." : "Top produk belum tersedia."}
               </p>
             ) : (
               top.map((t) => (
-                <div key={t.rank} className="flex items-center justify-between text-sm">
-                  <span className="truncate">{t.tipe_produk}</span>
-                  <Badge variant="secondary" className="tabular-nums">
-                    {(t.probabilitas * 100).toFixed(1)}%
-                  </Badge>
+                <div key={t.rank} className="space-y-1.5">
+                  <div className="flex items-baseline gap-2 text-sm">
+                    <span className="w-5 shrink-0 text-muted-foreground tabular-nums">
+                      {String(t.rank).padStart(2, "0")}
+                    </span>
+                    <span className="truncate">{t.tipe_produk}</span>
+                    <span className="ml-auto text-muted-foreground tabular-nums">
+                      {(t.probabilitas * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="ml-7 h-1 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className="h-full rounded-full bg-primary"
+                      style={{ width: `${t.probabilitas * 100}%` }}
+                    />
+                  </div>
                 </div>
               ))
             )}
-            <p className="pt-1 text-xs text-muted-foreground">
-              *Prediksi kasar, akurasi model produk rendah (~25%). Lihat evaluasi di halaman Riwayat.
+            <p className="pt-1 text-xs leading-relaxed text-muted-foreground">
+              Prediksi kasar, akurasi model produk rendah (~25%). Lihat evaluasi di halaman Riwayat.
             </p>
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Penjualan Bulanan</CardTitle>
-          <CardDescription>Aktual vs prediksi, dalam ribuan rupiah</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {history.isLoading ? (
-            <Skeleton className="h-72 w-full" />
-          ) : (
-            <div className="h-72">
-              <Line
-                data={chartData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  interaction: { intersect: false, mode: "index" },
-                  scales: {
-                    x: {
-                      grid: { display: false },
-                      ticks: { maxTicksLimit: 8 },
-                    },
-                    y: {
-                      beginAtZero: false,
-                      grid: { color: "oklch(0.905 0.008 85 / 0.4)" },
-                      ticks: { maxTicksLimit: 5 },
-                    },
-                  },
-                  plugins: {
-                    legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } },
-                    tooltip: {
-                      callbacks: {
-                        label: (ctx) => `${ctx.dataset.label}: ${formatRupiah(Number(ctx.raw))}`,
-                      },
-                    },
-                  },
-                }}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
     </div>
   )
 }
