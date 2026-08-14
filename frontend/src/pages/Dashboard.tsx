@@ -96,7 +96,6 @@ export default function Dashboard() {
         {isAdmin && (
           <Button
             size="sm"
-            className="bg-emerald-600 text-white shadow-none transition-colors hover:bg-emerald-700 focus-visible:ring-emerald-600/40 dark:bg-emerald-500 dark:text-emerald-950 dark:hover:bg-emerald-400 dark:focus-visible:ring-emerald-400/40"
             onClick={() => {
               refresh.mutate(undefined, {
                 onSuccess: () => toast.success("Prediksi diperbarui"),
