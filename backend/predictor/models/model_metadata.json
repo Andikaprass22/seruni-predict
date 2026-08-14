@@ -1,0 +1,54 @@
+{
+  "model": "RandomForestRegressor",
+  "dataset": "transaksi (2).csv (2022-2025, ribuan Rp)",
+  "target": "total_revenue_bulan (bulan t+1), target growth + rekonstruksi",
+  "best_hyperparameters": {
+    "n_estimators": 300,
+    "max_depth": null,
+    "max_features": 0.6,
+    "min_samples_leaf": 2,
+    "random_state": 42
+  },
+  "recency_weight": 2.0,
+  "n_train": 40,
+  "n_test": 4,
+  "feature_count": 16,
+  "features": [
+    "bulan_num",
+    "tahun",
+    "bulan_sin",
+    "bulan_cos",
+    "lag_1",
+    "lag_2",
+    "lag_3",
+    "ma_3",
+    "std_3",
+    "growth",
+    "diff",
+    "n_transaksi",
+    "qty_total",
+    "n_produk_unik",
+    "n_customer_unik",
+    "avg_transaksi"
+  ],
+  "metrics_test": {
+    "R2": 0.9563518578972354,
+    "MAE": 300.72150720267564,
+    "MSE": 122382.85141886307,
+    "RMSE": 349.83260485389735,
+    "MAPE": 1.5023126945201766
+  },
+  "metrics_train": {
+    "R2": 0.9569373637071803,
+    "MAE": 569.4303143975023,
+    "MSE": 517912.20370577334,
+    "RMSE": 719.6611728485658,
+    "MAPE": 3.332778794722758
+  },
+  "prediksi_berikutnya": {
+    "periode": "2026-01",
+    "prediksi": 26905.170065281163,
+    "lower": 23606.88464185462,
+    "upper": 29237.18217142844
+  }
+}

@@ -56,37 +56,26 @@ def predict_from_db():
 
 def _sync_history(monthly, current_pred):
     feat = engine.build_features(monthly)
+    r = feat["total_revenue_bulan"]
+    feat["target"] = r.shift(-1)
     n_test = 4
     n = len(feat)
     n_train = n - n_test
-    all_pred = None
-    try:
-        model = engine.load_model()
-        X = engine.to_matrix(feat)
-        lag1 = feat["lag_1"].to_numpy()
-        target = feat["target"] if "target" in feat.columns else None
-        if target is None:
-            return
-        mask = target.notna()
-        if mask.any():
-            all_pred = lag1[mask] * (1 + model.predict(X[mask]))
-    except Exception as e:
-        logger.error("history sync failed: %s", e)
-        return
-
     periods = feat["periode"].to_numpy()
     actuals = feat["total_revenue_bulan"].to_numpy()
+    targets = feat["target"].to_numpy()
+
     for i, p in enumerate(periods):
-        if not mask[i]:
+        if pd.isna(targets[i]):
             continue
-        pred = float(all_pred[i]) if all_pred is not None else None
-        act = float(actuals[i]) if i < len(actuals) else None
-        pred_val = pred if pred is not None else None
-        if act is not None and pred_val:
-            err = act - pred_val
-            mape = abs(err) / act * 100 if act else None
-        else:
-            err = mape = None
+        # prediksi in-sample: lag1 * (1 + model.predict(X))
+        row = feat.iloc[[i]]
+        X_row = engine.to_matrix(row)
+        g = engine.load_model().predict(X_row)[0]
+        pred_val = float(row["lag_1"].iloc[0] * (1 + g))
+        act = float(actuals[i])
+        err = act - pred_val
+        mape = abs(err) / act * 100 if act else None
         split = "train" if i < n_train else "test"
         HistoryPoint.objects.update_or_create(
             periode=p,
@@ -94,7 +83,7 @@ def _sync_history(monthly, current_pred):
                 "actual": act,
                 "prediksi": pred_val,
                 "error": err,
-                "abs_error": abs(err) if err is not None else None,
+                "abs_error": abs(err),
                 "mape": mape,
                 "split": split,
             },

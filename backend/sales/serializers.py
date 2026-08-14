@@ -14,11 +14,11 @@ def next_transaction_id(tanggal):
     nums = []
     for tid in qs.values_list("id", flat=True):
         try:
-            nums.append(int(tid.split("-")[1]))
+            nums.append(int(tid[len(prefix):]))
         except (IndexError, ValueError):
             continue
     nxt = (max(nums) + 1) if nums else 1
-    return f"{prefix}-{nxt:03d}"
+    return f"{prefix}{nxt:03d}"
 
 
 def next_customer_id():
