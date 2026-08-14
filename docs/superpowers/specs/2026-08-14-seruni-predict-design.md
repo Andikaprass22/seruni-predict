@@ -50,7 +50,9 @@ seruni-predict/
 │   │   ├── features.py        # agregasi bulanan + 16 fitur
 │   │   ├── trainer.py         # retrain pipeline
 │   │   └── models/
-│   │       └── model_rf_terbaik.joblib
+│   │       ├── model_rf_terbaik.joblib
+│   │       ├── produk_terlaris.joblib   # classifier (dibuat saat retrain)
+│   │       └── model_metadata.json      # disalin dari test/ agar FEATURE_COLS stabil
 │   ├── scripts/
 │   │   ├── seed_data.py       # import CSV 2022-2025 + 2026-01
 │   │   └── retrain_cli.py     # retrain via CLI
@@ -76,6 +78,11 @@ seruni-predict/
 ```
 
 **Prinsip desain:** `predictor/` berdiri sendiri sebagai unit ML murni — tidak tahu apa-apa tentang web. `apps/prediction/` memanggil `predictor.engine.predict()`. Ini memungkinkan engine diuji terpisah dan dipakai ulang (CLI, FastAPI, dsb).
+
+**Batas unit (interface):**
+- `predictor/` hanya menerima/mengembalikan **data polos** (pandas DataFrame, dict, list) — **tidak pernah** menyentuh tipe Django ORM.
+- `apps/prediction/` bertindak sebagai **adapter**: mengambil data dari DB → membentuk DataFrame → memanggil `predictor/` → memetakan hasil dict/DataFrame kembali ke objek ORM (`Prediction`, `HistoryPoint`, `TopProduct`).
+- `apps/sales/` memanggil `predictor/` hanya lewat `apps/prediction` (via signal), tidak langsung.
 
 ---
 
@@ -120,11 +127,16 @@ seruni-predict/
 ### `sales.Transaction`
 - `id` (CharField, PK, contoh `TRX-2026001`), `tanggal` (DateField), `customer` (FK → Customer), `keterangan`, `qty` (Float), `satuan`, `harga` (Float), `total` (Float = qty × harga), `bulan` (CharField, contoh `Januari`), `tahun` (Int), `tipe_customer` (CharField), `tipe_produk` (CharField)
 - Konsistensi `qty × harga = total`, `bulan`/`tahun` sesuai `tanggal` **divalidasi di serializer**.
+- **Generasi ID saat create via UI:**
+  - `Transaction.id`: prefix `TRX-{tahun}{bulan2digit}` + `-` + running number 4 digit (contoh `TRX-202601` → `TRX-2026001`); nomor berikutnya dihitung dari maksimum id sebulan tersebut + 1.
+  - `Customer.id`: prefix `CUST-` + running number 3 digit (`CUST-041`, `CUST-042`, …); dihitung dari maksimum id yang ada + 1.
+  - Bila id sudah ada → 400 (handled di serializer).
 
 ### `prediction.Prediction`
 - `periode` (CharField `YYYY-MM`), `prediksi` (Float, ribu Rp), `lower` (Float), `upper` (Float), `metode` (CharField: `auto` | `manual`), `created_at`
 - **Satu baris per periode (upsert by periode)** — baris untuk periode berikutnya di-update setiap prediksi ulang; `created_at` menyimpan kapan terakhir diperbarui.
-- **Rollover:** `HistoryPoint` adalah sumber kebenaran historis. Saat data aktual untuk suatu periode masuk, baris `Prediction` periode itu **dianggap historis** dan nilainya dicatat ke `HistoryPoint.actual` (via `predict_history()`), sedangkan `Prediction` fokus ke periode berikutnya yang masih kosong aktualnya.
+- **Rollover:** `HistoryPoint` adalah sumber kebenaran historis. Saat data aktual untuk suatu periode masuk, nilai `actual` periode itu dihitung dari **agregat bulanan DB**, dan nilai `prediksi` periode itu diambil dari **baris `Prediction`** (yang pernah menyimpan angka prediksi saat periode itu masih masa depan) → dicatat ke `HistoryPoint`. Baris `Prediction` untuk periode yang sudah punya aktual tidak lagi dianggap "prediksi berjalan".
+- **Catatan bulan terakhir:** `predict_history()` (replikasi cell 19a) hanya menghasilkan prediksi in-sample untuk periode yang punya target (`shift(-1)`), jadi prediksi untuk bulan terakhir yang baru selesai diambil dari baris `Prediction` yang tersimpan — bukan dihitung ulang sebagai in-sample. Keduanya disatukan saat membangun grafik.
 
 ### `prediction.HistoryPoint`
 - `periode` (unique), `actual` (nullable — null selama periode itu masih "masa depan"), `prediksi`, `error` (= actual − prediksi, null bila actual null), `abs_error`, `mape` (null bila actual null), `split` (train/test)
@@ -132,6 +144,7 @@ seruni-predict/
 
 ### `prediction.TopProduct`
 - `periode`, `rank` (1–5), `tipe_produk`, `probabilitas`
+- **Keberadaan classifier** di-ekspos lewat API: respons `/api/predictions/current/` menyertakan field `top_products_status` (`available` | `not_trained`) yang diderivasi dari ada/tidaknya `produk_terlaris.joblib`. Dashboard memakai field ini untuk menampilkan pesan yang sesuai role (admin: "jalankan retrain"; staff: "top produk belum tersedia").
 
 ### `prediction.ModelStatus`
 - Satu baris singleton: `trained_until` (periode terakhir yang dilatih), `last_retrain_at`, `r2_test`, `mae_test`, `mape_test`, `n_train`, `n_test`
@@ -268,7 +281,9 @@ DB (Transaction) ──signal──▶ predictor.engine (auto)
 - **Prediksi kosong**: bila data transaksi < 12 bulan (fitur lag tidak cukup), API mengembalikan status `insufficient_data` → UI menampilkan pesan alih-alih angka.
 - **Retrain gagal**: response 400/500 + log; `ModelStatus` tidak berubah; model lama tetap dipakai.
 - **Unit nilai**: semua nilai revenue dalam **ribu rupiah** (konsisten dengan notebook) — didokumentasikan di UI (label "ribu Rp").
-- **Concurrency**: prediksi auto dijalankan di thread/queue terpisah agar tidak memblokir request; mencegah double-run dengan lock sederhana.
+- **Concurrency**: prediksi auto dijalankan **di thread terpisah** via `threading.Timer` (debounce ~2 detik setelah perubahan terakhir) agar tidak memblokir request. Lock sederhana (`threading.Lock`) mencegah double-run. SQLite WAL diaktifkan (`journal_mode=WAL`) untuk menoleransi read saat write prediksi; karena volume kecil (1.200 transaksi), risiko write-lock dapat diabaikan — dicatat agar tidak lupa saat plan.
+- **Export CSV**: `/api/predictions/export/` menghasilkan CSV (prediksi berjalan + riwayat). Tombol "Export CSV" di halaman Riwayat (semua role).
+- **Tombol Retrain**: ditempatkan di **halaman Riwayat** (bukan dashboard), hanya untuk admin, dengan konfirmasi sebelum eksekusi.
 
 ---
 
