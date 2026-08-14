@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Pencil, Plus, Trash2 } from "lucide-react"
+import { useMemo, useState } from "react"
+import { Pencil, Plus, Search, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -23,10 +23,13 @@ import {
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { formatId, formatRupiah, formatTanggal } from "@/lib/format"
 import { useAuth } from "@/hooks/useAuth"
 import { useCustomer, useTransaksi } from "@/hooks/useData"
 import type { Transaction } from "@/types"
 
+const PAGE_SIZE = 10
 const EMPTY = {
   tanggal: "",
   customer: "",
@@ -46,6 +49,8 @@ export default function Transaksi() {
   const [editId, setEditId] = useState<string | null>(null)
   const [form, setForm] = useState({ ...EMPTY })
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [query, setQuery] = useState("")
+  const [page, setPage] = useState(1)
 
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }))
 
@@ -86,15 +91,30 @@ export default function Transaksi() {
     setDeleteId(null)
   }
 
-  const rows = list.data ?? []
   const custOptions = customers.list.data ?? []
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const data = list.data ?? []
+    if (!q) return data
+    return data.filter((t) =>
+      [t.id, t.customer, t.tipe_produk, t.keterangan, t.bulan, String(t.tahun)]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    )
+  }, [list.data, query])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Transaksi</h1>
-          <p className="text-muted-foreground">{rows.length} transaksi</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Transaksi</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{filtered.length} transaksi</p>
         </div>
         <Button onClick={() => { setEditId(null); setForm({ ...EMPTY }); setOpen(true) }}>
           <Plus /> Tambah Transaksi
@@ -102,78 +122,122 @@ export default function Transaksi() {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex-row items-center justify-between gap-3">
           <CardTitle>Daftar Transaksi</CardTitle>
+          <div className="relative w-full max-w-60">
+            <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              className="pl-8"
+              placeholder="Cari transaksi..."
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setPage(1) }}
+              aria-label="Cari transaksi"
+            />
+          </div>
         </CardHeader>
         <CardContent>
           {list.isLoading ? (
             <Skeleton className="h-64 w-full" />
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Tanggal</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Produk</TableHead>
-                  <TableHead>Qty</TableHead>
-                  <TableHead>Total (ribu Rp)</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rows.map((t: Transaction) => (
-                  <TableRow key={t.id}>
-                    <TableCell className="font-mono text-xs">{t.id}</TableCell>
-                    <TableCell>{t.tanggal}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{t.customer}</Badge>
-                    </TableCell>
-                    <TableCell>{t.tipe_produk}</TableCell>
-                    <TableCell>{t.qty} {t.satuan}</TableCell>
-                    <TableCell>{Math.round(t.total).toLocaleString("id-ID")}</TableCell>
-                    <TableCell className="text-right">
-                      {isAdmin && (
-                        <>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setEditId(t.id)
-                              setForm({
-                                tanggal: t.tanggal,
-                                customer: t.customer,
-                                keterangan: t.keterangan,
-                                qty: t.qty,
-                                satuan: t.satuan,
-                                harga: t.harga,
-                                tipe_customer: t.tipe_customer,
-                                tipe_produk: t.tipe_produk,
-                              })
-                              setOpen(true)
-                            }}
-                          >
-                            <Pencil />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => setDeleteId(t.id)}>
-                            <Trash2 className="text-destructive" />
-                          </Button>
-                        </>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {rows.length === 0 && (
+            <>
+              <div className="overflow-x-auto">
+                <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground">
-                      Belum ada transaksi
-                    </TableCell>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Tanggal</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Produk</TableHead>
+                    <TableHead>Qty</TableHead>
+                    <TableHead>Total (ribu Rp)</TableHead>
+                    <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-            </div>
+                </TableHeader>
+                <TableBody>
+                  {pageRows.map((t: Transaction) => (
+                    <TableRow key={t.id}>
+                      <TableCell className="font-mono text-xs">{formatId(t.id)}</TableCell>
+                      <TableCell>{formatTanggal(t.tanggal)}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{t.customer}</Badge>
+                      </TableCell>
+                      <TableCell>{t.tipe_produk}</TableCell>
+                      <TableCell>{t.qty} {t.satuan}</TableCell>
+                      <TableCell className="tabular-nums">{formatRupiah(t.total)}</TableCell>
+                      <TableCell className="text-right">
+                        {isAdmin && (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  aria-label={`Edit transaksi ${t.id}`}
+                                  onClick={() => {
+                                    setEditId(t.id)
+                                    setForm({
+                                      tanggal: t.tanggal,
+                                      customer: t.customer,
+                                      keterangan: t.keterangan,
+                                      qty: t.qty,
+                                      satuan: t.satuan,
+                                      harga: t.harga,
+                                      tipe_customer: t.tipe_customer,
+                                      tipe_produk: t.tipe_produk,
+                                    })
+                                    setOpen(true)
+                                  }}
+                                >
+                                  <Pencil />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Edit transaksi</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  aria-label={`Hapus transaksi ${t.id}`}
+                                  onClick={() => setDeleteId(t.id)}
+                                >
+                                  <Trash2 className="text-destructive" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Hapus transaksi</TooltipContent>
+                            </Tooltip>
+                          </>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {pageRows.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                        {filtered.length === 0 ? "Belum ada transaksi" : "Tidak ditemukan transaksi yang cocok"}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+              </div>
+
+              {filtered.length > PAGE_SIZE && (
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <p className="text-sm text-muted-foreground">
+                    Menampilkan {(safePage - 1) * PAGE_SIZE + 1} - {Math.min(safePage * PAGE_SIZE, filtered.length)} dari {filtered.length}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" disabled={safePage <= 1} onClick={() => setPage(safePage - 1)}>
+                      Sebelumnya
+                    </Button>
+                    <Button variant="outline" size="sm" disabled={safePage >= totalPages} onClick={() => setPage(safePage + 1)}>
+                      Berikutnya
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

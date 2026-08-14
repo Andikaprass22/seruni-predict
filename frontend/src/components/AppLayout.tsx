@@ -5,7 +5,7 @@ import {
   Receipt,
   Users,
 } from "lucide-react"
-import { NavLink, useNavigate } from "react-router-dom"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -25,6 +25,7 @@ import { useAuth } from "@/hooks/useAuth"
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const nav = [
     { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
@@ -32,6 +33,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     { to: "/customer", label: "Customer", icon: Users },
     { to: "/riwayat", label: "Riwayat & Evaluasi", icon: LineChart },
   ]
+  const current =
+    nav.find((n) => (n.end ? location.pathname === n.to : location.pathname.startsWith(n.to)))?.label ??
+    "Dashboard"
 
   const initials = (user?.username ?? "?")
     .split(/[@.]/)
@@ -102,9 +106,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
             <SidebarTrigger />
-            <span className="text-sm text-muted-foreground">Seruni Predict</span>
+            <span className="text-sm font-medium">{current}</span>
           </header>
-          <main className="flex-1 overflow-auto p-4 md:p-8">{children}</main>
+          <main className="flex-1 overflow-auto p-4 md:p-8">
+            <div key={location.pathname} className="page-enter">{children}</div>
+          </main>
         </div>
       </div>
     </SidebarProvider>

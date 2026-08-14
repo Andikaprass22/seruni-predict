@@ -16,15 +16,11 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { chartColor, formatPeriode, formatRupiah } from "@/lib/format"
 import { useAuth } from "@/hooks/useAuth"
 import { usePrediksi } from "@/hooks/usePrediksi"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
-
-function formatRp(v: number | null | undefined) {
-  if (v === null || v === undefined) return "-"
-  return `${Math.round(v).toLocaleString("id-ID")}`
-}
 
 export default function Dashboard() {
   const { current, history, refresh } = usePrediksi()
@@ -36,7 +32,7 @@ export default function Dashboard() {
 
   const labels = (history.data ?? [])
     .filter((h) => h.prediksi !== null)
-    .map((h) => h.periode)
+    .map((h) => formatPeriode(h.periode))
   const actuals = (history.data ?? []).filter((h) => h.prediksi !== null).map((h) => h.actual)
   const preds = (history.data ?? []).filter((h) => h.prediksi !== null).map((h) => h.prediksi)
 
@@ -46,8 +42,8 @@ export default function Dashboard() {
       {
         label: "Aktual",
         data: actuals,
-        borderColor: "oklch(0.585 0.17 255)",
-        backgroundColor: "oklch(0.585 0.17 255 / 0.08)",
+        borderColor: chartColor(0),
+        backgroundColor: chartColor(0, 0.08),
         pointRadius: 0,
         borderWidth: 2,
         fill: false,
@@ -56,8 +52,8 @@ export default function Dashboard() {
       {
         label: "Prediksi",
         data: preds,
-        borderColor: "oklch(0.7 0.16 162.48)",
-        backgroundColor: "oklch(0.7 0.16 162.48 / 0.12)",
+        borderColor: chartColor(1),
+        backgroundColor: chartColor(1, 0.12),
         pointRadius: 0,
         borderWidth: 2,
         borderDash: [4, 4],
@@ -66,6 +62,15 @@ export default function Dashboard() {
       },
     ],
   }
+
+  const mape =
+    status?.mape_test !== null && status?.mape_test !== undefined
+      ? `${status.mape_test.toFixed(2)}%`
+      : "-"
+  const r2 =
+    status?.r2_test !== null && status?.r2_test !== undefined
+      ? `${(status.r2_test * 100).toFixed(1)}%`
+      : "-"
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8">
@@ -100,7 +105,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Prediksi Revenue
             </CardTitle>
-            <CardDescription>Bulan {pred?.periode ?? "-"}</CardDescription>
+            <CardDescription>Bulan {pred?.periode ? formatPeriode(pred.periode) : "-"}</CardDescription>
           </CardHeader>
           <CardContent>
             {current.isLoading ? (
@@ -108,10 +113,10 @@ export default function Dashboard() {
             ) : (
               <>
                 <p className="text-3xl font-semibold tracking-tight tabular-nums">
-                  {formatRp(pred?.prediksi)}
+                  {formatRupiah(pred?.prediksi)}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Rentang: {formatRp(pred?.lower)} - {formatRp(pred?.upper)} ribu Rp
+                  Rentang: {formatRupiah(pred?.lower)} - {formatRupiah(pred?.upper)} ribu Rp
                 </p>
               </>
             )}
@@ -121,7 +126,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Akurasi Model
+              Akurasi Model Revenue
             </CardTitle>
             <CardDescription>Evaluasi test set terakhir</CardDescription>
           </CardHeader>
@@ -131,13 +136,10 @@ export default function Dashboard() {
             ) : (
               <>
                 <p className="text-3xl font-semibold tracking-tight tabular-nums">
-                  {status?.r2_test !== null && status?.r2_test !== undefined
-                    ? `${(status.r2_test * 100).toFixed(1)}%`
-                    : "-"}
+                  R² {r2}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  MAPE {status?.mape_test !== null && status?.mape_test !== undefined ? `${status.mape_test.toFixed(2)}%` : "-"} · trained s/d{" "}
-                  {status?.trained_until ?? "-"}
+                  MAPE {mape} · trained s/d {status?.trained_until ?? "-"}
                 </p>
               </>
             )}
@@ -149,7 +151,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Top Produk
             </CardTitle>
-            <CardDescription>Bulan {pred?.periode ?? "-"}</CardDescription>
+            <CardDescription>Bulan {pred?.periode ? formatPeriode(pred.periode) : "-"}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             {current.data?.top_products_status === "not_trained" ? (
@@ -167,7 +169,7 @@ export default function Dashboard() {
               ))
             )}
             <p className="pt-1 text-xs text-muted-foreground">
-              *Prediksi kasar, akurasi model produk rendah (~25%).
+              *Prediksi kasar, akurasi model produk rendah (~25%). Lihat evaluasi di halaman Riwayat.
             </p>
           </CardContent>
         </Card>
@@ -196,7 +198,7 @@ export default function Dashboard() {
                     },
                     y: {
                       beginAtZero: false,
-                      grid: { color: "oklch(0.922 0 0 / 0.4)" },
+                      grid: { color: "oklch(0.905 0.008 85 / 0.4)" },
                       ticks: { maxTicksLimit: 5 },
                     },
                   },
@@ -204,7 +206,7 @@ export default function Dashboard() {
                     legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } },
                     tooltip: {
                       callbacks: {
-                        label: (ctx) => `${ctx.dataset.label}: ${Math.round(Number(ctx.raw)).toLocaleString("id-ID")}`,
+                        label: (ctx) => `${ctx.dataset.label}: ${formatRupiah(Number(ctx.raw))}`,
                       },
                     },
                   },

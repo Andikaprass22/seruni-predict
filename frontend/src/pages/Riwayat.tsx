@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import api from "@/lib/api"
+import { formatPeriode, formatRupiah } from "@/lib/format"
 import { useAuth } from "@/hooks/useAuth"
 import { usePrediksi } from "@/hooks/usePrediksi"
 
@@ -21,6 +23,7 @@ export default function Riwayat() {
   const { history, retrain } = usePrediksi()
   const { isAdmin } = useAuth()
   const [confirmRetrain, setConfirmRetrain] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const rows = history.data ?? []
   const withActual = rows.filter((h) => h.actual !== null)
@@ -37,24 +40,40 @@ export default function Riwayat() {
     })
   }
 
-  const exportCsv = () => {
-    window.location.href = "/api/predictions/export/"
+  const exportCsv = async () => {
+    setExporting(true)
+    try {
+      // Download through the axios client so the JWT bearer token is attached.
+      const { data } = await api.get<Blob>("/predictions/export/", {
+        responseType: "blob",
+      })
+      const url = URL.createObjectURL(data)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "prediksi-seruni.csv"
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      toast.error("Gagal mengekspor CSV")
+    } finally {
+      setExporting(false)
+    }
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Riwayat & Evaluasi</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight">Riwayat & Evaluasi</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {withActual.length > 0 && avgMape !== null
               ? `MAPE rata-rata (${withActual.length} bulan): ${avgMape.toFixed(2)}%`
               : "Belum ada data aktual untuk evaluasi"}
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={exportCsv}>
-            <Download /> Export CSV
+          <Button variant="outline" onClick={exportCsv} disabled={exporting}>
+            <Download /> {exporting ? "Mengekspor..." : "Export CSV"}
           </Button>
           {isAdmin && (
             <Button variant="secondary" onClick={() => setConfirmRetrain(true)}>
@@ -85,10 +104,10 @@ export default function Riwayat() {
               <TableBody>
                 {rows.map((h) => (
                   <TableRow key={h.periode}>
-                    <TableCell className="font-mono text-xs">{h.periode}</TableCell>
-                    <TableCell>{h.actual !== null ? Math.round(h.actual).toLocaleString("id-ID") : "-"}</TableCell>
-                    <TableCell>{h.prediksi !== null ? Math.round(h.prediksi).toLocaleString("id-ID") : "-"}</TableCell>
-                    <TableCell>{h.error !== null ? Math.round(h.error).toLocaleString("id-ID") : "-"}</TableCell>
+                    <TableCell className="font-mono text-xs">{formatPeriode(h.periode)}</TableCell>
+                    <TableCell>{h.actual !== null ? formatRupiah(h.actual) : "-"}</TableCell>
+                    <TableCell>{h.prediksi !== null ? formatRupiah(h.prediksi) : "-"}</TableCell>
+                    <TableCell>{h.error !== null ? formatRupiah(h.error) : "-"}</TableCell>
                     <TableCell>{h.mape !== null ? `${h.mape.toFixed(2)}%` : "-"}</TableCell>
                     <TableCell>
                       <Badge variant={h.split === "test" ? "default" : "secondary"}>{h.split}</Badge>
