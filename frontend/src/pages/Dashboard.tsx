@@ -79,9 +79,9 @@ export default function Dashboard() {
       : null
 
   const metrics = [
-    { label: "R² test", value: r2 },
-    { label: "MAPE", value: mape },
-    { label: "Trained s/d", value: formatPeriode(status?.trained_until) },
+    { label: "R² test", value: r2, desc: "Semakin mendekati 100%, semakin baik" },
+    { label: "MAPE", value: mape, desc: "Rata-rata error prediksi bulanan" },
+    { label: "Trained s/d", value: formatPeriode(status?.trained_until), desc: "Data terakhir yang melatih model" },
   ]
 
   return (
@@ -115,7 +115,7 @@ export default function Dashboard() {
       <Card className="shadow-none">
         <CardContent className="px-6 py-7 lg:px-8">
           <div className="grid gap-8 md:grid-cols-4 md:gap-0 md:divide-x md:divide-border">
-            <div className="md:pr-8">
+            <div className="flex flex-col md:pr-8">
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
                   Prediksi Revenue
@@ -133,7 +133,7 @@ export default function Dashboard() {
                   <p className="mt-3 text-4xl font-semibold tracking-tight tabular-nums lg:text-5xl">
                     {formatRupiah(pred?.prediksi)}
                   </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-4">
                     {delta !== null && (
                       <p className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                         {delta >= 0 ? (
@@ -153,12 +153,17 @@ export default function Dashboard() {
             </div>
 
             {metrics.map((m) => (
-              <div key={m.label} className="md:px-8">
+              <div key={m.label} className="flex flex-col md:px-8">
                 <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
                 {current.isLoading ? (
                   <Skeleton className="mt-2 h-12 w-32" />
                 ) : (
-                  <p className="mt-2 text-4xl font-bold tracking-tight tabular-nums">{m.value}</p>
+                  <>
+                    <p className="mt-2 text-4xl font-bold tracking-tight tabular-nums">{m.value}</p>
+                    <p className="mt-1.5 max-w-44 pt-auto text-sm leading-snug text-muted-foreground">
+                      {m.desc}
+                    </p>
+                  </>
                 )}
               </div>
             ))}
