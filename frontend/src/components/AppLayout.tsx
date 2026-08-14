@@ -1,9 +1,9 @@
 import {
+  Banknote,
   LayoutDashboard,
   LineChart,
   LogOut,
   Receipt,
-  Sparkles,
   Users,
 } from "lucide-react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
@@ -57,7 +57,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarHeader>
             <div className="flex items-center gap-3 px-3 py-5">
               <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-data-[collapsible=icon]:size-8">
-                <Sparkles className="size-5" />
+                <Banknote className="size-5" />
               </div>
               <div className="min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold tracking-tight">Seruni Predict</p>
