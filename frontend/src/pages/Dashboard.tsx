@@ -95,8 +95,8 @@ export default function Dashboard() {
         </div>
         {isAdmin && (
           <Button
-            variant="outline"
             size="sm"
+            className="bg-emerald-600 text-white shadow-none transition-colors hover:bg-emerald-700 focus-visible:ring-emerald-600/40 dark:bg-emerald-500 dark:text-emerald-950 dark:hover:bg-emerald-400 dark:focus-visible:ring-emerald-400/40"
             onClick={() => {
               refresh.mutate(undefined, {
                 onSuccess: () => toast.success("Prediksi diperbarui"),
@@ -156,11 +156,11 @@ export default function Dashboard() {
               <div key={m.label} className="flex flex-col md:px-8">
                 <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
                 {current.isLoading ? (
-                  <Skeleton className="mt-2 h-12 w-32" />
+                  <Skeleton className="mt-2 h-14 w-36" />
                 ) : (
                   <>
-                    <p className="mt-2 text-4xl font-bold tracking-tight tabular-nums">{m.value}</p>
-                    <p className="mt-1.5 max-w-44 pt-auto text-sm leading-snug text-muted-foreground">
+                    <p className="mt-2 text-5xl font-semibold tracking-tight tabular-nums">{m.value}</p>
+                    <p className="mt-auto max-w-44 pt-1.5 text-sm leading-snug text-muted-foreground">
                       {m.desc}
                     </p>
                   </>
