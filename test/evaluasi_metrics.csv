@@ -1,0 +1,15 @@
+metric,value
+Model,Random Forest Optimized
+Dataset,2022-2025 (ribuan Rp)
+R2,0.9563518578972354
+Akurasi (R2x100%),95.63518578972354
+MAE,300.72150720267564
+MSE,122382.85141886307
+RMSE,349.83260485389735
+MAPE,1.5023126945201766
+R2 baseline,-0.8092951219331159
+MAPE baseline,8.746784439195126
+Klasifikasi produk - Accuracy,0.25
+Klasifikasi produk - F1,0.25
+Prediksi 2026-01,26905.170065281163
+Produk terlaris 2026-01,Buku Cetak

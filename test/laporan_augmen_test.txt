@@ -1,0 +1,9 @@
+baris: 1200
+
+Revenue per tahun:
+  2022: 158431
+  2023: 190159
+  2024: 221157
+  2025: 255259
+
+Korelasi pola bulanan: 0.9887

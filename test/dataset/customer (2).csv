@@ -1,0 +1,41 @@
+id,nama,tipe,join,total_transaksi,total_revenue
+CUST-001,Toko Sembako Alvin,ukm,2021-02,51,30147
+CUST-002,Car Rental Service,ukm,2021-10,20,9501
+CUST-003,Mecca Kids,ukm,2021-08,36,19470
+CUST-004,Jasuke Maknyus,ukm,2021-06,35,41265
+CUST-005,Mts 1 Model,sekolah,2021-06,20,18015
+CUST-006,Agro IoT Marigold,agri_tech,2021-11,35,10554
+CUST-007,Melon Seed Precision,agri_tech,2021-02,25,3127
+CUST-008,Mal Bali Galeria Tenant,enterprise,2021-09,15,13259
+CUST-009,Fotokopi Kita,ukm,2021-03,42,53101
+CUST-010,Barber King,ukm,2021-02,30,11765
+CUST-011,Sanggar Butik Selong,ukm,2021-07,52,63313
+CUST-012,Doni,personal,2021-12,36,17763
+CUST-013,Budi,personal,2021-09,25,8602
+CUST-014,Maya,personal,2021-10,36,39157
+CUST-015,Roni,personal,2021-09,15,9980
+CUST-016,Siska,personal,2021-10,37,13467
+CUST-017,Hendra,personal,2021-07,36,14804
+CUST-018,Lana,personal,2021-02,54,20975
+CUST-019,SMA Hamzanwadi,sekolah,2021-11,15,3473
+CUST-020,Universitas Nusa,sekolah,2021-06,22,3856
+CUST-021,Pondok Pesantren Darul,sekolah,2021-07,25,19823
+CUST-022,Klinik Sehat,enterprise,2021-05,26,14495
+CUST-023,PT Sinar Printing,enterprise,2021-03,30,31663
+CUST-024,CV Karya Mandiri,enterprise,2021-12,20,17543
+CUST-025,Laundry Express,ukm,2021-10,5,480
+CUST-026,Cafe Senja,ukm,2021-08,37,24691
+CUST-027,Rental Motor Cepat,ukm,2021-05,40,44161
+CUST-028,Koperasi Guru,sekolah,2021-10,41,28637
+CUST-029,RS Harapan,enterprise,2021-07,21,14015
+CUST-030,Dinas Pendidikan,pemerintah,2021-06,26,19497
+CUST-031,Kantor Desa Sari,pemerintah,2021-06,40,40513
+CUST-032,SMK Teknologi,sekolah,2021-03,15,14018
+CUST-033,Panti Asuhan Bina,pemerintah,2021-02,30,28238
+CUST-034,Toko Buku Cerdas,ukm,2021-07,20,3813
+CUST-035,Studio Foto Abadi,ukm,2021-11,10,3138
+CUST-036,Event Organizer Prima,event,2021-01,33,23767
+CUST-037,Perumda Air Minum,enterprise,2021-11,45,28400
+CUST-038,Kampus Poltek,sekolah,2021-10,41,29323
+CUST-039,Sekolah Dasar Negeri 2,sekolah,2021-04,16,8329
+CUST-040,Percetakan Jaya,ukm,2021-08,42,24868

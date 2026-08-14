@@ -1,0 +1,11 @@
+Transaksi: 234 baris
+Rentang  : 2022-01-06 s/d 2025-12-27
+
+Per tahun:
+tanggal
+2022    40
+2023    54
+2024    61
+2025    79
+
+Customer: 40 baris

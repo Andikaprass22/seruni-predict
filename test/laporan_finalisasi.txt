@@ -1,0 +1,10 @@
+transaksi (2).csv : 1200 baris
+customer (2).csv  : 40 baris
+rentang           : 2022-01-02 s/d 2025-12-27
+
+Per tahun:
+tahun
+2022    205
+2023    276
+2024    314
+2025    405

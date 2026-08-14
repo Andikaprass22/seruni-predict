@@ -1,0 +1,15 @@
+Realisasi: 1200 baris
+Rentang: 2022-01-02 s/d 2025-12-27
+
+Revenue per tahun:
+  2022: 158456
+  2023: 189486
+  2024: 222362
+  2025: 255919
+
+Revenue per bulan (3 contoh):
+tanggal
+2022-01    16157.0
+2022-02    14885.0
+2022-03    13765.0
+Freq: M

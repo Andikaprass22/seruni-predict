@@ -1,0 +1,31 @@
+id,tanggal,kode_cust,keterangan,qty,satuan,harga,total,bulan,tahun,tipe_customer,tipe_produk
+TRX-2026001,2026-01-02,CUST-005,Spanduk Kain - Jan 2026,1,m,113.1,113.1,Januari,2026,sekolah,Spanduk Kain
+TRX-2026002,2026-01-02,CUST-028,ID Card - Jan 2026,4,pcs,77.0,308.0,Januari,2026,sekolah,ID Card
+TRX-2026003,2026-01-05,CUST-011,Kaos Sablon - Jan 2026,3,pcs,217.3,651.9,Januari,2026,ukm,Kaos Sablon
+TRX-2026004,2026-01-06,CUST-026,Banner Flexi - Jan 2026,6,m,102.5,615.0,Januari,2026,ukm,Banner Flexi
+TRX-2026005,2026-01-07,CUST-002,Kaos Sablon - Jan 2026,4,pcs,222.8,891.2,Januari,2026,ukm,Kaos Sablon
+TRX-2026006,2026-01-07,CUST-004,Banner Flexi - Jan 2026,7,m,104.8,733.6,Januari,2026,ukm,Banner Flexi
+TRX-2026007,2026-01-09,CUST-007,Brosur Lipat Tiga - Jan 2026,7,lbr,9.2,64.4,Januari,2026,agri_tech,Brosur Lipat Tiga
+TRX-2026008,2026-01-12,CUST-012,X-Banner Stand - Jan 2026,7,unit,838.8,5871.6,Januari,2026,personal,X-Banner Stand
+TRX-2026009,2026-01-13,CUST-024,Jilid Hard Cover - Jan 2026,2,eks,137.8,275.6,Januari,2026,enterprise,Jilid Hard Cover
+TRX-2026010,2026-01-13,CUST-018,Kaos Sablon - Jan 2026,5,pcs,216.9,1084.5,Januari,2026,personal,Kaos Sablon
+TRX-2026011,2026-01-14,CUST-006,Pengadaan Modul - Jan 2026,5,eks,87.6,438.0,Januari,2026,agri_tech,Pengadaan Modul
+TRX-2026012,2026-01-14,CUST-021,ID Card - Jan 2026,7,pcs,78.2,547.4,Januari,2026,sekolah,ID Card
+TRX-2026013,2026-01-14,CUST-001,Paket ATK - Jan 2026,5,pak,1439.3,7196.5,Januari,2026,ukm,Paket ATK
+TRX-2026015,2026-01-15,CUST-008,Backdrop - Jan 2026,1,m,136.6,136.6,Januari,2026,enterprise,Backdrop
+TRX-2026014,2026-01-15,CUST-009,Brosur Lipat Tiga - Jan 2026,5,lbr,9.3,46.5,Januari,2026,ukm,Brosur Lipat Tiga
+TRX-2026016,2026-01-16,CUST-010,Spanduk Kain - Jan 2026,7,m,111.3,779.1,Januari,2026,ukm,Spanduk Kain
+TRX-2026017,2026-01-19,CUST-038,Buku Cetak - Jan 2026,1,eks,61.5,61.5,Januari,2026,sekolah,Buku Cetak
+TRX-2026018,2026-01-20,CUST-003,Brosur Lipat Tiga - Jan 2026,5,lbr,9.3,46.5,Januari,2026,ukm,Brosur Lipat Tiga
+TRX-2026019,2026-01-21,CUST-031,Cetak Digital A4 - Jan 2026,7,lbr,5.3,37.1,Januari,2026,pemerintah,Cetak Digital A4
+TRX-2026020,2026-01-21,CUST-005,Spanduk Kain - Jan 2026,3,m,110.6,331.8,Januari,2026,sekolah,Spanduk Kain
+TRX-2026021,2026-01-22,CUST-028,Kaos Sablon - Jan 2026,1,pcs,217.1,217.1,Januari,2026,sekolah,Kaos Sablon
+TRX-2026022,2026-01-23,CUST-011,Kaos Sablon - Jan 2026,8,pcs,221.6,1772.8,Januari,2026,ukm,Kaos Sablon
+TRX-2026023,2026-01-23,CUST-026,Banner Flexi - Jan 2026,2,m,103.1,206.2,Januari,2026,ukm,Banner Flexi
+TRX-2026024,2026-01-26,CUST-002,Stempel - Jan 2026,6,unit,77.5,465.0,Januari,2026,ukm,Stempel
+TRX-2026025,2026-01-27,CUST-004,Mug Souvenir - Jan 2026,6,pcs,138.2,829.2,Januari,2026,ukm,Mug Souvenir
+TRX-2026026,2026-01-27,CUST-007,Print Laser Warna - Jan 2026,4,lbr,17.3,69.2,Januari,2026,agri_tech,Print Laser Warna
+TRX-2026027,2026-01-27,CUST-012,Pasfoto Kilat - Jan 2026,6,pak,175.5,1053.0,Januari,2026,personal,Pasfoto Kilat
+TRX-2026029,2026-01-28,CUST-018,Kaos Sablon - Jan 2026,3,pcs,217.4,652.2,Januari,2026,personal,Kaos Sablon
+TRX-2026028,2026-01-28,CUST-024,Backdrop - Jan 2026,6,m,134.9,809.4,Januari,2026,enterprise,Backdrop
+TRX-2026030,2026-01-30,CUST-006,Pengadaan Modul - Jan 2026,7,eks,85.9,601.3,Januari,2026,agri_tech,Pengadaan Modul

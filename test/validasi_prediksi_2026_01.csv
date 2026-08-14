@@ -1,0 +1,18 @@
+﻿=== 1. VALIDASI AKURASI MODEL (TEST SET: 4 BULAN TERAKHIR) ===
+periode,actual (ribu Rp),prediksi (ribu Rp),error,abs_error
+2025-08,19229.0,19651.06,-422.06,422.06
+2025-09,19475.0,19994.25,-519.25,519.25
+2025-10,21196.0,21126.73,69.27,69.27
+2025-11,23415.0,23222.69,192.31,192.31
+
+METRIK AKURASI TEST SET
+R2,0.9564
+MAE (ribu Rp),300.72
+RMSE (ribu Rp),349.83
+MAPE (%),1.5
+Keterangan,"MAPE 1.50% artinya rata-rata kesalahan prediksi hanya 1,5% dari nilai aktual"
+
+=== 2. PREDIKSI BULAN JANUARI 2026 (BELUM ADA DATA AKTUAL) ===
+periode,prediksi (ribu Rp),lower (ribu Rp),upper (ribu Rp)
+2026-01,26905.17,23606.88,29237.18
+Keterangan,"Nilai aktual belum tersedia (data hanya s/d 2025-12). Prediksi dipercaya akurat karena error test set hanya sekitar 1,5%."
