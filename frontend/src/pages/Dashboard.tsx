@@ -158,7 +158,7 @@ export default function Dashboard() {
                   <Skeleton className="mt-2 h-14 w-36" />
                 ) : (
                   <>
-                    <p className="mt-2 text-5xl font-semibold tracking-tight tabular-nums">{m.value}</p>
+                    <p className="mt-2 text-5xl font-semibold tracking-tight tabular-nums opacity-75">{m.value}</p>
                     <p className="mt-auto max-w-44 pt-1.5 text-sm leading-snug text-muted-foreground">
                       {m.desc}
                     </p>
