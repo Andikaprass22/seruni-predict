@@ -3,6 +3,7 @@ import {
   LineChart,
   LogOut,
   Receipt,
+  Sparkles,
   Users,
 } from "lucide-react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
@@ -13,13 +14,17 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/useAuth"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -28,10 +33,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
 
   const nav = [
-    { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
-    { to: "/transaksi", label: "Transaksi", icon: Receipt },
-    { to: "/customer", label: "Customer", icon: Users },
-    { to: "/riwayat", label: "Riwayat & Evaluasi", icon: LineChart },
+    { to: "/", label: "Dashboard", sub: "Ringkasan & prediksi", icon: LayoutDashboard, end: true },
+    { to: "/transaksi", label: "Transaksi", sub: "Input & kelola data", icon: Receipt },
+    { to: "/customer", label: "Customer", sub: "Data pelanggan", icon: Users },
+    { to: "/riwayat", label: "Riwayat & Evaluasi", sub: "Akurasi model", icon: LineChart },
   ]
   const current =
     nav.find((n) => (n.end ? location.pathname === n.to : location.pathname.startsWith(n.to)))?.label ??
@@ -48,39 +53,71 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-svh w-full">
-        <Sidebar>
+        <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
           <SidebarHeader>
-            <div className="px-3 py-4">
-              <p className="text-sm font-semibold tracking-tight">Seruni Predict</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">Sistem Informasi Penjualan</p>
+            <div className="flex items-center gap-3 px-3 py-5">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-data-[collapsible=icon]:size-8">
+                <Sparkles className="size-5" />
+              </div>
+              <div className="min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
+                <p className="truncate text-sm font-semibold tracking-tight">Seruni Predict</p>
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">Sistem Informasi Penjualan</p>
+              </div>
             </div>
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <SidebarMenu>
-                {nav.map((item) => (
-                  <SidebarMenuItem key={item.to}>
-                    <SidebarMenuButton asChild>
-                      <NavLink to={item.to} end={item.end}>
-                        <item.icon />
-                        <span>{item.label}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
+              <SidebarGroupLabel className="px-4 text-[11px] font-medium uppercase tracking-widest text-muted-foreground/70">
+                Menu
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {nav.map((item) => (
+                    <SidebarMenuItem key={item.to}>
+                      <SidebarMenuButton
+                        asChild
+                        size="lg"
+                        tooltip={item.label}
+                        className="h-12 rounded-lg px-3 py-2 transition-colors duration-150 group-data-[collapsible=icon]:justify-center"
+                      >
+                        <NavLink to={item.to} end={item.end}>
+                          {({ isActive }) => (
+                            <>
+                              <item.icon
+                                className={cn(
+                                  "size-[18px] shrink-0 transition-colors",
+                                  isActive ? "text-primary" : "text-muted-foreground"
+                                )}
+                              />
+                              <span className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
+                                <span className="truncate text-sm font-medium leading-tight">
+                                  {item.label}
+                                </span>
+                                <span className="truncate text-xs leading-tight text-muted-foreground">
+                                  {item.sub}
+                                </span>
+                              </span>
+                            </>
+                          )}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter>
-            <div className="border-t px-3 py-3">
+            <SidebarSeparator />
+            <div className="px-3 py-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-2.5">
                   <Avatar className="size-8">
-                    <AvatarFallback className="bg-muted text-xs font-medium">
+                    <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="min-w-0">
+                  <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                     <p className="truncate text-sm font-medium leading-tight">{user?.username}</p>
                     <p className="text-xs text-muted-foreground capitalize">
                       {isAdmin ? "Admin" : "Staff"}
@@ -90,7 +127,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-8 text-muted-foreground"
+                  className="size-8 text-muted-foreground group-data-[collapsible=icon]:hidden"
                   onClick={() => {
                     logout()
                     navigate("/login")
