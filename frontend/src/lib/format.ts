@@ -39,10 +39,10 @@ export function formatTanggalPanjang(iso: string | null | undefined): string {
   return `${d} ${BULAN[m - 1]} ${y}`
 }
 
-/** Number to Indonesian thousand separator. */
+/** Format a value stored in thousands of rupiah as full rupiah. */
 export function formatRupiah(v: number | null | undefined): string {
   if (v === null || v === undefined) return "-"
-  return Math.round(v).toLocaleString("id-ID")
+  return `Rp ${Math.round(v * 1000).toLocaleString("id-ID")}`
 }
 
 /** Build a readable color for a chart series index, in OKLCH. */

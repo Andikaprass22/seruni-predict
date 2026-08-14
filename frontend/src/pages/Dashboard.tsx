@@ -113,8 +113,8 @@ export default function Dashboard() {
       {/* Stat band: flat, hairline-divided, type does the hierarchy */}
       <Card className="shadow-none">
         <CardContent className="px-6 py-7 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-4 md:gap-0 md:divide-x md:divide-border">
-            <div className="flex flex-col md:pr-8">
+          <div className="grid gap-8 md:grid-cols-[1.6fr_1fr_1fr_1fr] md:gap-0 md:divide-x md:divide-border">
+            <div className="flex min-w-0 flex-col md:pr-8">
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
                   Prediksi Revenue
@@ -129,8 +129,11 @@ export default function Dashboard() {
                 <Skeleton className="mt-3 h-12 w-56" />
               ) : (
                 <>
-                  <p className="mt-3 text-4xl font-semibold tracking-tight tabular-nums lg:text-5xl">
-                    {formatRupiah(pred?.prediksi)}
+                  <p className="mt-3 flex min-w-0 flex-wrap items-center gap-x-1.5 text-4xl font-semibold tracking-tight lg:text-5xl">
+                    <span className="text-3xl font-medium text-muted-foreground lg:text-4xl">Rp</span>
+                    <span className="tabular-nums">
+                      {(pred?.prediksi ?? 0).toLocaleString("id-ID")}
+                    </span>
                   </p>
                   <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-4">
                     {delta !== null && (
@@ -144,7 +147,7 @@ export default function Dashboard() {
                       </p>
                     )}
                     <p className="text-sm text-muted-foreground">
-                      Rentang {formatRupiah(pred?.lower)} - {formatRupiah(pred?.upper)} ribu Rp
+                      Rentang {formatRupiah(pred?.lower)} - {formatRupiah(pred?.upper)}
                     </p>
                   </div>
                 </>
@@ -174,7 +177,7 @@ export default function Dashboard() {
         <Card className="shadow-none lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">Penjualan Bulanan</CardTitle>
-            <CardDescription>Aktual vs prediksi, dalam ribuan rupiah</CardDescription>
+            <CardDescription>Aktual vs prediksi, dalam rupiah</CardDescription>
           </CardHeader>
           <CardContent>
             {history.isLoading ? (

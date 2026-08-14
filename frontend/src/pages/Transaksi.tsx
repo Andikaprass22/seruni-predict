@@ -149,7 +149,7 @@ export default function Transaksi() {
                     <TableHead>Customer</TableHead>
                     <TableHead>Produk</TableHead>
                     <TableHead>Qty</TableHead>
-                    <TableHead>Total (ribu Rp)</TableHead>
+                    <TableHead>Total</TableHead>
                     <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -278,7 +278,7 @@ export default function Transaksi() {
                 <Input required value={form.satuan} onChange={(e) => set("satuan", e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Harga (ribu Rp)</Label>
+                <Label>Harga (Rp)</Label>
                 <Input type="number" min={0} required value={form.harga} onChange={(e) => set("harga", e.target.value)} />
               </div>
             </div>
