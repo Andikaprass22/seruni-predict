@@ -72,7 +72,8 @@ export default function Customer() {
           {list.isLoading ? (
             <Skeleton className="h-64 w-full" />
           ) : (
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
@@ -111,6 +112,7 @@ export default function Customer() {
                 )}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>

@@ -70,7 +70,8 @@ export default function Riwayat() {
           {history.isLoading ? (
             <Skeleton className="h-64 w-full" />
           ) : (
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Periode</TableHead>
@@ -103,6 +104,7 @@ export default function Riwayat() {
                 )}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>

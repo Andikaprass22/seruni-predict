@@ -109,7 +109,8 @@ export default function Transaksi() {
           {list.isLoading ? (
             <Skeleton className="h-64 w-full" />
           ) : (
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
@@ -172,6 +173,7 @@ export default function Transaksi() {
                 )}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>

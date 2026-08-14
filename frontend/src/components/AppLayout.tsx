@@ -6,13 +6,13 @@ import {
   Users,
 } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -33,19 +33,26 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     { to: "/riwayat", label: "Riwayat & Evaluasi", icon: LineChart },
   ]
 
+  const initials = (user?.username ?? "?")
+    .split(/[@.]/)
+    .filter(Boolean)
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
+
   return (
     <SidebarProvider>
       <div className="flex min-h-svh w-full">
         <Sidebar>
           <SidebarHeader>
-            <div className="px-2 py-2">
-              <p className="text-lg font-bold">Seruni Predict</p>
-              <p className="text-xs text-muted-foreground">Sistem Informasi Penjualan</p>
+            <div className="px-3 py-4">
+              <p className="text-sm font-semibold tracking-tight">Seruni Predict</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Sistem Informasi Penjualan</p>
             </div>
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <SidebarGroupLabel>Menu</SidebarGroupLabel>
               <SidebarMenu>
                 {nav.map((item) => (
                   <SidebarMenuItem key={item.to}>
@@ -61,30 +68,43 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter>
-            <div className="flex items-center justify-between px-2 py-2">
-              <div>
-                <p className="text-sm font-medium">{user?.username}</p>
-                <p className="text-xs text-muted-foreground capitalize">{isAdmin ? "Admin" : "Staff"}</p>
+            <div className="border-t px-3 py-3">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <Avatar className="size-8">
+                    <AvatarFallback className="bg-muted text-xs font-medium">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium leading-tight">{user?.username}</p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {isAdmin ? "Admin" : "Staff"}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 text-muted-foreground"
+                  onClick={() => {
+                    logout()
+                    navigate("/login")
+                  }}
+                >
+                  <LogOut />
+                  <span className="sr-only">Keluar</span>
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  logout()
-                  navigate("/login")
-                }}
-              >
-                <LogOut />
-              </Button>
             </div>
           </SidebarFooter>
         </Sidebar>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 items-center gap-2 border-b px-4">
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
             <SidebarTrigger />
-            <span className="text-sm font-medium text-muted-foreground">Seruni Predict</span>
+            <span className="text-sm text-muted-foreground">Seruni Predict</span>
           </header>
-          <main className="flex-1 overflow-auto p-6">{children}</main>
+          <main className="flex-1 overflow-auto p-4 md:p-8">{children}</main>
         </div>
       </div>
     </SidebarProvider>

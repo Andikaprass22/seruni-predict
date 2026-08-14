@@ -23,7 +23,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 function formatRp(v: number | null | undefined) {
   if (v === null || v === undefined) return "-"
-  return `${Math.round(v).toLocaleString("id-ID")} ribu Rp`
+  return `${Math.round(v).toLocaleString("id-ID")}`
 }
 
 export default function Dashboard() {
@@ -46,16 +46,21 @@ export default function Dashboard() {
       {
         label: "Aktual",
         data: actuals,
-        borderColor: "oklch(0.625 0.19 250)",
-        backgroundColor: "oklch(0.625 0.19 250 / 0.1)",
+        borderColor: "oklch(0.585 0.17 255)",
+        backgroundColor: "oklch(0.585 0.17 255 / 0.08)",
+        pointRadius: 0,
+        borderWidth: 2,
         fill: false,
         tension: 0.3,
       },
       {
         label: "Prediksi",
         data: preds,
-        borderColor: "oklch(0.769 0.188 70.08)",
-        backgroundColor: "oklch(0.769 0.188 70.08 / 0.1)",
+        borderColor: "oklch(0.7 0.16 162.48)",
+        backgroundColor: "oklch(0.7 0.16 162.48 / 0.12)",
+        pointRadius: 0,
+        borderWidth: 2,
+        borderDash: [4, 4],
         fill: true,
         tension: 0.3,
       },
@@ -63,15 +68,18 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto w-full max-w-6xl space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Ringkasan prediksi penjualan bulan berikutnya</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ringkasan prediksi penjualan bulan berikutnya
+          </p>
         </div>
         {isAdmin && (
           <Button
             variant="outline"
+            size="sm"
             onClick={() => {
               refresh.mutate(undefined, {
                 onSuccess: () => toast.success("Prediksi diperbarui"),
@@ -86,20 +94,24 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Prediksi Revenue</CardTitle>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Card className="border-l-4 border-l-primary">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Prediksi Revenue
+            </CardTitle>
             <CardDescription>Bulan {pred?.periode ?? "-"}</CardDescription>
           </CardHeader>
           <CardContent>
             {current.isLoading ? (
-              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-9 w-44" />
             ) : (
               <>
-                <p className="text-3xl font-bold">{formatRp(pred?.prediksi)}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Rentang: {formatRp(pred?.lower)} - {formatRp(pred?.upper)}
+                <p className="text-3xl font-semibold tracking-tight tabular-nums">
+                  {formatRp(pred?.prediksi)}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Rentang: {formatRp(pred?.lower)} - {formatRp(pred?.upper)} ribu Rp
                 </p>
               </>
             )}
@@ -107,32 +119,36 @@ export default function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Akurasi Model</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Akurasi Model
+            </CardTitle>
             <CardDescription>Evaluasi test set terakhir</CardDescription>
           </CardHeader>
           <CardContent>
             {current.isLoading ? (
-              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-9 w-32" />
             ) : (
               <>
-                <p className="text-3xl font-bold">
+                <p className="text-3xl font-semibold tracking-tight tabular-nums">
                   {status?.r2_test !== null && status?.r2_test !== undefined
                     ? `${(status.r2_test * 100).toFixed(1)}%`
                     : "-"}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  MAPE: {status?.mape_test !== null && status?.mape_test !== undefined ? `${status.mape_test.toFixed(2)}%` : "-"} · R²
+                <p className="mt-1 text-xs text-muted-foreground">
+                  MAPE {status?.mape_test !== null && status?.mape_test !== undefined ? `${status.mape_test.toFixed(2)}%` : "-"} · trained s/d{" "}
+                  {status?.trained_until ?? "-"}
                 </p>
-                <p className="text-xs text-muted-foreground">Trained s/d {status?.trained_until ?? "-"}</p>
               </>
             )}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Produk</CardTitle>
+        <Card className="sm:col-span-2 lg:col-span-1">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Top Produk
+            </CardTitle>
             <CardDescription>Bulan {pred?.periode ?? "-"}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -143,8 +159,10 @@ export default function Dashboard() {
             ) : (
               top.map((t) => (
                 <div key={t.rank} className="flex items-center justify-between text-sm">
-                  <span>{t.tipe_produk}</span>
-                  <Badge variant="secondary">{(t.probabilitas * 100).toFixed(1)}%</Badge>
+                  <span className="truncate">{t.tipe_produk}</span>
+                  <Badge variant="secondary" className="tabular-nums">
+                    {(t.probabilitas * 100).toFixed(1)}%
+                  </Badge>
                 </div>
               ))
             )}
@@ -157,20 +175,39 @@ export default function Dashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Penjualan Bulanan: Aktual vs Prediksi</CardTitle>
-          <CardDescription>Nilai dalam ribuan rupiah</CardDescription>
+          <CardTitle className="text-base">Penjualan Bulanan</CardTitle>
+          <CardDescription>Aktual vs prediksi, dalam ribuan rupiah</CardDescription>
         </CardHeader>
         <CardContent>
           {history.isLoading ? (
-            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-72 w-full" />
           ) : (
-            <div className="h-64">
+            <div className="h-72">
               <Line
                 data={chartData}
                 options={{
                   responsive: true,
                   maintainAspectRatio: false,
-                  scales: { y: { beginAtZero: false } },
+                  interaction: { intersect: false, mode: "index" },
+                  scales: {
+                    x: {
+                      grid: { display: false },
+                      ticks: { maxTicksLimit: 8 },
+                    },
+                    y: {
+                      beginAtZero: false,
+                      grid: { color: "oklch(0.922 0 0 / 0.4)" },
+                      ticks: { maxTicksLimit: 5 },
+                    },
+                  },
+                  plugins: {
+                    legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } },
+                    tooltip: {
+                      callbacks: {
+                        label: (ctx) => `${ctx.dataset.label}: ${Math.round(Number(ctx.raw)).toLocaleString("id-ID")}`,
+                      },
+                    },
+                  },
                 }}
               />
             </div>
