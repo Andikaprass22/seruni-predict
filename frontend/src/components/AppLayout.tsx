@@ -141,11 +141,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </SidebarFooter>
         </Sidebar>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-3 backdrop-blur md:px-6">
             <SidebarTrigger />
-            <span className="text-sm font-medium">{current}</span>
+            <span className="truncate text-sm font-medium">{current}</span>
           </header>
-          <main className="flex-1 overflow-auto p-4 md:p-8">
+          <main className="flex-1 overflow-auto p-3 md:p-8">
             <div key={location.pathname} className="page-enter">{children}</div>
           </main>
         </div>

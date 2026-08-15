@@ -112,8 +112,8 @@ export default function Dashboard() {
 
       {/* Stat band: flat, hairline-divided, type does the hierarchy */}
       <Card className="shadow-none">
-        <CardContent className="px-6 py-7 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-[1.6fr_1fr_1fr_1fr] md:gap-0 md:divide-x md:divide-border">
+        <CardContent className="px-5 py-6 md:px-6 md:py-7 lg:px-8">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-[1.6fr_1fr_1fr_1fr] md:gap-0 md:divide-x md:divide-border">
             <div className="flex min-w-0 flex-col md:pr-8">
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
@@ -161,7 +161,7 @@ export default function Dashboard() {
                   <Skeleton className="mt-2 h-14 w-36" />
                 ) : (
                   <>
-                    <p className="mt-2 text-5xl font-semibold tracking-tight tabular-nums opacity-75">{m.value}</p>
+                    <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums opacity-75 sm:text-5xl">{m.value}</p>
                     <p className="mt-auto max-w-44 pt-1.5 text-sm leading-snug text-muted-foreground">
                       {m.desc}
                     </p>
@@ -181,9 +181,9 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {history.isLoading ? (
-              <Skeleton className="h-72 w-full" />
+              <Skeleton className="h-64 w-full sm:h-72" />
             ) : (
-              <div className="h-72">
+              <div className="h-64 sm:h-72">
                 <Line
                   data={chartData}
                   options={{
@@ -218,7 +218,7 @@ export default function Dashboard() {
 
         <Card className="shadow-none">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base">Top Produk</CardTitle>
+            <CardTitle className="text-base">Top 3 Produk</CardTitle>
             <CardDescription>
               {pred?.periode ? `Periode ${formatPeriode(pred.periode)}` : "Periode berikutnya"}
             </CardDescription>
@@ -229,7 +229,7 @@ export default function Dashboard() {
                 {isAdmin ? "Jalankan retrain untuk menghasilkan top produk." : "Top produk belum tersedia."}
               </p>
             ) : (
-              top.map((t) => (
+              top.slice(0, 3).map((t) => (
                 <div key={t.rank} className="space-y-1.5">
                   <div className="flex items-baseline gap-2 text-sm">
                     <span className="w-5 shrink-0 text-muted-foreground tabular-nums">
@@ -250,7 +250,8 @@ export default function Dashboard() {
               ))
             )}
             <p className="pt-1 text-xs leading-relaxed text-muted-foreground">
-              Prediksi kasar, akurasi model produk rendah (~25%). Lihat evaluasi di halaman Riwayat.
+              Prediksi probabilistik: produk terlaris diperkirakan ada di antara kandidat di atas. Akurasi top-1
+              rendah, tetapi akurasi top-3 ~75% pada data evaluasi.
             </p>
           </CardContent>
         </Card>

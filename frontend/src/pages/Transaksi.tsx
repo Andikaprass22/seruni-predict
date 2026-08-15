@@ -111,20 +111,20 @@ export default function Transaksi() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Transaksi</h1>
           <p className="mt-1 text-sm text-muted-foreground">{filtered.length} transaksi</p>
         </div>
-        <Button onClick={() => { setEditId(null); setForm({ ...EMPTY }); setOpen(true) }}>
+        <Button className="w-full sm:w-auto" onClick={() => { setEditId(null); setForm({ ...EMPTY }); setOpen(true) }}>
           <Plus /> Tambah Transaksi
         </Button>
       </div>
 
       <Card>
-        <CardHeader className="flex-row items-center justify-between gap-3">
+        <CardHeader className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>Daftar Transaksi</CardTitle>
-          <div className="relative w-full max-w-60">
+          <div className="relative w-full max-w-none sm:max-w-60">
             <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pl-8"
@@ -223,15 +223,15 @@ export default function Transaksi() {
               </div>
 
               {filtered.length > PAGE_SIZE && (
-                <div className="mt-4 flex items-center justify-between gap-3">
+                <div className="mt-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                   <p className="text-sm text-muted-foreground">
                     Menampilkan {(safePage - 1) * PAGE_SIZE + 1} - {Math.min(safePage * PAGE_SIZE, filtered.length)} dari {filtered.length}
                   </p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" disabled={safePage <= 1} onClick={() => setPage(safePage - 1)}>
+                  <div className="flex w-full gap-2 sm:w-auto">
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none" disabled={safePage <= 1} onClick={() => setPage(safePage - 1)}>
                       Sebelumnya
                     </Button>
-                    <Button variant="outline" size="sm" disabled={safePage >= totalPages} onClick={() => setPage(safePage + 1)}>
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none" disabled={safePage >= totalPages} onClick={() => setPage(safePage + 1)}>
                       Berikutnya
                     </Button>
                   </div>
@@ -268,7 +268,7 @@ export default function Transaksi() {
               <Label>Keterangan</Label>
               <Input required value={form.keterangan} onChange={(e) => set("keterangan", e.target.value)} />
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-3">
               <div className="space-y-2">
                 <Label>Qty</Label>
                 <Input type="number" min={1} required value={form.qty} onChange={(e) => set("qty", e.target.value)} />

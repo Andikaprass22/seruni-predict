@@ -66,14 +66,30 @@ def _sync_history(monthly, current_pred):
     targets = feat["target"].to_numpy()
 
     for i, p in enumerate(periods):
-        if pd.isna(targets[i]):
-            continue
+        act = float(actuals[i])
         # prediksi in-sample: lag1 * (1 + model.predict(X))
         row = feat.iloc[[i]]
         X_row = engine.to_matrix(row)
         g = engine.load_model().predict(X_row)[0]
         pred_val = float(row["lag_1"].iloc[0] * (1 + g))
-        act = float(actuals[i])
+        if pd.isna(targets[i]):
+            # Bulan terakhir punya aktual tapi belum punya target (t+1).
+            # Hitung prediksi in-sample (lag1 x (1+growth)) agar baris punya
+            # prediksi, error, dan MAPE — sama seperti bulan lain di riwayat.
+            err = act - pred_val
+            mape = abs(err) / act * 100 if act else None
+            HistoryPoint.objects.update_or_create(
+                periode=p,
+                defaults={
+                    "actual": act,
+                    "prediksi": pred_val,
+                    "error": err,
+                    "abs_error": abs(err),
+                    "mape": mape,
+                    "split": "actual",
+                },
+            )
+            continue
         err = act - pred_val
         mape = abs(err) / act * 100 if act else None
         split = "train" if i < n_train else "test"

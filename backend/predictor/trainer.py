@@ -3,8 +3,9 @@ import json
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestRegressor
+from sklearn.metrics import (accuracy_score, f1_score, mean_absolute_error,
+                             mean_squared_error, r2_score, top_k_accuracy_score)
 
 from .engine import invalidate_model_cache
 from .features import FEATURE_COLS, MODELS_DIR, build_features, to_matrix
@@ -20,11 +21,10 @@ FINAL_PARAMS = {
 RECENCY_W = 2.0
 N_TEST = 4
 CLF_PARAMS = {
-    "n_estimators": 500,
-    "max_depth": None,
-    "max_features": 0.5,
-    "min_samples_leaf": 2,
-    "class_weight": "balanced",
+    "n_estimators": 300,
+    "learning_rate": 0.08,
+    "max_depth": 3,
+    "min_samples_leaf": 4,
     "random_state": RANDOM_STATE,
 }
 
@@ -92,11 +92,27 @@ def train_top_products_classifier(transactions: pd.DataFrame, monthly: pd.DataFr
     if Xc.shape[0] < 2:
         return None
     n_train = Xc.shape[0] - N_TEST
-    clf = RandomForestClassifier(n_jobs=-1, **CLF_PARAMS)
+    clf = GradientBoostingClassifier(**CLF_PARAMS)
     clf.fit(Xc[:n_train], yc[:n_train])
     joblib.dump(clf, MODELS_DIR / "produk_terlaris.joblib")
     invalidate_model_cache()
-    return clf
+
+    # Evaluasi holdout: akurasi top-1 vs top-3 (target realistis untuk prediksi produk).
+    y_test = yc[n_train:]
+    if len(y_test) > 0:
+        proba_test = clf.predict_proba(Xc[n_train:])
+        labels = clf.classes_
+        acc_top1 = accuracy_score(y_test, clf.predict(Xc[n_train:]))
+        acc_top3 = top_k_accuracy_score(y_test, proba_test, k=3, labels=labels)
+        f1 = f1_score(y_test, clf.predict(Xc[n_train:]), average="macro", labels=labels)
+    else:
+        acc_top1 = acc_top3 = f1 = float("nan")
+    return {
+        "acc_top1": float(acc_top1),
+        "acc_top3": float(acc_top3),
+        "f1_macro": float(f1),
+        "n_test": int(len(y_test)),
+    }
 
 
 def save_metadata(metrics_test, metrics_train, n_train, last_periode, prediksi):

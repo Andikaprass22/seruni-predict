@@ -62,7 +62,7 @@ export default function Riwayat() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Riwayat & Evaluasi</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -71,12 +71,12 @@ export default function Riwayat() {
               : "Belum ada data aktual untuk evaluasi"}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={exportCsv} disabled={exporting}>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" className="flex-1 sm:flex-none" onClick={exportCsv} disabled={exporting}>
             <Download /> {exporting ? "Mengekspor..." : "Export CSV"}
           </Button>
           {isAdmin && (
-            <Button variant="secondary" onClick={() => setConfirmRetrain(true)}>
+            <Button variant="secondary" className="flex-1 sm:flex-none" onClick={() => setConfirmRetrain(true)}>
               <RefreshCw /> Retrain Model
             </Button>
           )}
