@@ -1,5 +1,4 @@
 import {
-  Banknote,
   LayoutDashboard,
   LineChart,
   LogOut,
@@ -28,7 +27,7 @@ import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/useAuth"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout, isAdmin } = useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -56,9 +55,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
           <SidebarHeader>
             <div className="flex items-center gap-3 px-3 py-5">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-data-[collapsible=icon]:size-8">
-                <Banknote className="size-5" />
-              </div>
+              <img
+                src="/logo.webp"
+                alt="Logo Seruni Predict"
+                className="size-9 shrink-0 rounded-lg bg-white object-contain group-data-[collapsible=icon]:size-8"
+              />
               <div className="min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold tracking-tight">Seruni Predict</p>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">Sistem Informasi Penjualan</p>
@@ -119,17 +120,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   </Avatar>
                   <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                     <p className="truncate text-sm font-medium leading-tight">{user?.username}</p>
-                    <p className="text-xs text-muted-foreground capitalize">
-                      {isAdmin ? "Admin" : "Staff"}
-                    </p>
+                    <p className="text-xs text-muted-foreground capitalize">Admin</p>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="size-8 text-muted-foreground group-data-[collapsible=icon]:hidden"
-                  onClick={() => {
-                    logout()
+                  onClick={async () => {
+                    await logout()
                     navigate("/login")
                   }}
                 >

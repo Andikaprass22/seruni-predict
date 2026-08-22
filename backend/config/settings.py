@@ -7,8 +7,17 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+# SECURITY: untuk demo sidang set .env SECRET_KEY acak (50+ char) dan DEBUG=False di produksi
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only-change-me")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+if not DEBUG and SECRET_KEY in ("django-insecure-dev-only-change-me", "change-me-in-production"):
+    raise ValueError("SECRET_KEY tidak aman untuk produksi — generate baru via: python -c \"from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())\"")
+# Warning jika dev masih pakai key bawaan (tidak blokir dev)
+if DEBUG and SECRET_KEY in ("django-insecure-dev-only-change-me", "change-me-in-production"):
+    import warnings
+
+    warnings.warn("SECRET_KEY masih default dev — ganti sebelum demo/sidang produksi", UserWarning)
+
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 if DEBUG:
     ALLOWED_HOSTS += ["testserver"]
@@ -21,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "accounts",
     "sales",
@@ -92,7 +102,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "config.pagination.FlexiblePagination",
     "PAGE_SIZE": 20,
 }
 
@@ -100,6 +110,6 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
 }

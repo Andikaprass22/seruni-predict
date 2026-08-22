@@ -8,8 +8,16 @@ MODELS_DIR = Path(__file__).parent / "models"
 
 
 def _metadata():
-    with open(MODELS_DIR / "model_metadata.json", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(MODELS_DIR / "model_metadata.json", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(
+            "model_metadata.json tidak ditemukan — jalankan retrain atau seed ulang. "
+            f"Cari di {MODELS_DIR / 'model_metadata.json'}"
+        ) from e
+    except json.JSONDecodeError as e:
+        raise ValueError(f"model_metadata.json korup: {e}") from e
 
 
 FEATURE_COLS = _metadata()["features"]

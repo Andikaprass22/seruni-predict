@@ -16,12 +16,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import api from "@/lib/api"
 import { formatPeriode, formatRupiah } from "@/lib/format"
-import { useAuth } from "@/hooks/useAuth"
 import { usePrediksi } from "@/hooks/usePrediksi"
 
 export default function Riwayat() {
   const { history, retrain } = usePrediksi()
-  const { isAdmin } = useAuth()
   const [confirmRetrain, setConfirmRetrain] = useState(false)
   const [exporting, setExporting] = useState(false)
 
@@ -75,11 +73,9 @@ export default function Riwayat() {
           <Button variant="outline" className="flex-1 sm:flex-none" onClick={exportCsv} disabled={exporting}>
             <Download /> {exporting ? "Mengekspor..." : "Export CSV"}
           </Button>
-          {isAdmin && (
-            <Button variant="secondary" className="flex-1 sm:flex-none" onClick={() => setConfirmRetrain(true)}>
-              <RefreshCw /> Retrain Model
-            </Button>
-          )}
+          <Button variant="secondary" className="flex-1 sm:flex-none" onClick={() => setConfirmRetrain(true)}>
+            <RefreshCw /> Retrain Model
+          </Button>
         </div>
       </div>
 
@@ -110,7 +106,26 @@ export default function Riwayat() {
                     <TableCell>{h.error !== null ? formatRupiah(h.error) : "-"}</TableCell>
                     <TableCell>{h.mape !== null ? `${h.mape.toFixed(2)}%` : "-"}</TableCell>
                     <TableCell>
-                      <Badge variant={h.split === "test" ? "default" : "secondary"}>{h.split}</Badge>
+                      <Badge
+                        variant={
+                          h.split === "test"
+                            ? "default"
+                            : h.split === "train"
+                              ? "secondary"
+                              : h.split === "future"
+                                ? "outline"
+                                : "outline"
+                        }
+                        className={
+                          h.split === "actual"
+                            ? "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                            : h.split === "future"
+                              ? "border-dashed"
+                              : ""
+                        }
+                      >
+                        {h.split}
+                      </Badge>
                     </TableCell>
                   </TableRow>
                 ))}

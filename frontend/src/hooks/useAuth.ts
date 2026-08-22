@@ -17,7 +17,15 @@ export function useAuth() {
     },
   })
 
-  const logout = () => {
+  const logout = async () => {
+    const refresh = localStorage.getItem("refresh")
+    if (refresh) {
+      try {
+        await api.post("/auth/token/blacklist/", { refresh })
+      } catch {
+        // blacklist gagal (token sudah invalid) — tetap lanjut logout
+      }
+    }
     localStorage.removeItem("access")
     localStorage.removeItem("refresh")
     queryClient.clear()
@@ -30,5 +38,7 @@ export function useAuth() {
     retry: false,
   })
 
-  return { login, logout, me, user: me.data, isAdmin: me.data?.role === "admin" }
+  // Single Admin: setiap user terautentikasi adalah admin (satu-satunya role)
+  const isAdmin = !!me.data
+  return { login, logout, me, user: me.data, isAdmin }
 }

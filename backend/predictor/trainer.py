@@ -1,4 +1,7 @@
 import json
+import os
+import tempfile
+from pathlib import Path
 
 import joblib
 import numpy as np
@@ -69,7 +72,26 @@ def train_from_transactions(transactions: pd.DataFrame, monthly: pd.DataFrame):
     p_tr = lag1[:n_train] * (1 + model.predict(X_train))
     m_train = _metrics(y_level[:n_train], p_tr)
 
-    joblib.dump(model, MODELS_DIR / "model_rf_terbaik.joblib")
+    # Atomic swap dengan backup agar retrain gagal tidak korup model produksi
+    target = MODELS_DIR / "model_rf_terbaik.joblib"
+    backup = MODELS_DIR / "model_rf_terbaik.joblib.bak"
+    try:
+        if target.exists():
+            # simpan backup sebelum timpa
+            backup.write_bytes(target.read_bytes())
+    except Exception:
+        pass
+    # dump ke tmp lalu replace atomik
+    fd, tmp_path = tempfile.mkstemp(suffix=".joblib", dir=str(MODELS_DIR))
+    os.close(fd)
+    try:
+        joblib.dump(model, tmp_path)
+        os.replace(tmp_path, target)
+    finally:
+        try:
+            Path(tmp_path).unlink(missing_ok=True)
+        except Exception:
+            pass
     invalidate_model_cache()
     return {"model": model, "metrics_test": m_test, "metrics_train": m_train, "n_train": n_train, "N_TEST": N_TEST}
 
@@ -94,7 +116,24 @@ def train_top_products_classifier(transactions: pd.DataFrame, monthly: pd.DataFr
     n_train = Xc.shape[0] - N_TEST
     clf = GradientBoostingClassifier(**CLF_PARAMS)
     clf.fit(Xc[:n_train], yc[:n_train])
-    joblib.dump(clf, MODELS_DIR / "produk_terlaris.joblib")
+    # atomic swap untuk classifier juga
+    target_clf = MODELS_DIR / "produk_terlaris.joblib"
+    backup_clf = MODELS_DIR / "produk_terlaris.joblib.bak"
+    try:
+        if target_clf.exists():
+            backup_clf.write_bytes(target_clf.read_bytes())
+    except Exception:
+        pass
+    fd2, tmp2 = tempfile.mkstemp(suffix=".joblib", dir=str(MODELS_DIR))
+    os.close(fd2)
+    try:
+        joblib.dump(clf, tmp2)
+        os.replace(tmp2, target_clf)
+    finally:
+        try:
+            Path(tmp2).unlink(missing_ok=True)
+        except Exception:
+            pass
     invalidate_model_cache()
 
     # Evaluasi holdout: akurasi top-1 vs top-3 (target realistis untuk prediksi produk).

@@ -24,8 +24,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { formatId, formatRupiah, formatTanggal } from "@/lib/format"
-import { useAuth } from "@/hooks/useAuth"
+import { formatRupiah, formatTanggal } from "@/lib/format"
 import { useCustomer, useTransaksi } from "@/hooks/useData"
 import type { Transaction } from "@/types"
 
@@ -44,7 +43,6 @@ const EMPTY = {
 export default function Transaksi() {
   const { list, create, update, remove } = useTransaksi()
   const customers = useCustomer()
-  const { isAdmin } = useAuth()
   const [open, setOpen] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [form, setForm] = useState({ ...EMPTY })
@@ -144,7 +142,7 @@ export default function Transaksi() {
                 <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
+                    <TableHead className="w-12">#</TableHead>
                     <TableHead>Tanggal</TableHead>
                     <TableHead>Customer</TableHead>
                     <TableHead>Produk</TableHead>
@@ -154,9 +152,11 @@ export default function Transaksi() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {pageRows.map((t: Transaction) => (
+                  {pageRows.map((t: Transaction, idx) => (
                     <TableRow key={t.id}>
-                      <TableCell className="font-mono text-xs">{formatId(t.id)}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground tabular-nums">
+                        {(safePage - 1) * PAGE_SIZE + idx + 1}
+                      </TableCell>
                       <TableCell>{formatTanggal(t.tanggal)}</TableCell>
                       <TableCell>
                         <Badge variant="outline">{t.customer}</Badge>
@@ -165,55 +165,51 @@ export default function Transaksi() {
                       <TableCell>{t.qty} {t.satuan}</TableCell>
                       <TableCell className="tabular-nums">{formatRupiah(t.total)}</TableCell>
                       <TableCell className="text-right">
-                        {isAdmin && (
-                          <>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  aria-label={`Edit transaksi ${t.id}`}
-                                  onClick={() => {
-                                    setEditId(t.id)
-                                    setForm({
-                                      tanggal: t.tanggal,
-                                      customer: t.customer,
-                                      keterangan: t.keterangan,
-                                      qty: t.qty,
-                                      satuan: t.satuan,
-                                      harga: t.harga,
-                                      tipe_customer: t.tipe_customer,
-                                      tipe_produk: t.tipe_produk,
-                                    })
-                                    setOpen(true)
-                                  }}
-                                >
-                                  <Pencil />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Edit transaksi</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  aria-label={`Hapus transaksi ${t.id}`}
-                                  onClick={() => setDeleteId(t.id)}
-                                >
-                                  <Trash2 className="text-destructive" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Hapus transaksi</TooltipContent>
-                            </Tooltip>
-                          </>
-                        )}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Edit transaksi ${t.id}`}
+                              onClick={() => {
+                                setEditId(t.id)
+                                setForm({
+                                  tanggal: t.tanggal,
+                                  customer: t.customer,
+                                  keterangan: t.keterangan,
+                                  qty: t.qty,
+                                  satuan: t.satuan,
+                                  harga: t.harga,
+                                  tipe_customer: t.tipe_customer,
+                                  tipe_produk: t.tipe_produk,
+                                })
+                                setOpen(true)
+                              }}
+                            >
+                              <Pencil />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Edit transaksi</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Hapus transaksi ${t.id}`}
+                              onClick={() => setDeleteId(t.id)}
+                            >
+                              <Trash2 className="text-destructive" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Hapus transaksi</TooltipContent>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}
                   {pageRows.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">
                         {filtered.length === 0 ? "Belum ada transaksi" : "Tidak ditemukan transaksi yang cocok"}
                       </TableCell>
                     </TableRow>

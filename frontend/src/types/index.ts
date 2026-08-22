@@ -2,7 +2,7 @@ export interface User {
   id: number
   username: string
   email: string
-  role: "admin" | "staff"
+  role: "admin" | "staff" // legacy: sistem kini Single Admin, role selalu "admin"
   first_name: string
   last_name: string
 }

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Plus, Search, Trash2 } from "lucide-react"
+import { Pencil, Plus, Search, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -25,16 +25,15 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { formatPeriode, formatRupiah } from "@/lib/format"
-import { useAuth } from "@/hooks/useAuth"
 import { useCustomer } from "@/hooks/useData"
 
 const PAGE_SIZE = 10
 const TIPE = ["ukm", "sekolah", "agri_tech", "enterprise", "personal", "pemerintah", "event"]
 
 export default function Customer() {
-  const { list, create, remove } = useCustomer()
-  const { isAdmin } = useAuth()
+  const { list, create, update, remove } = useCustomer()
   const [open, setOpen] = useState(false)
+  const [editId, setEditId] = useState<string | null>(null)
   const [nama, setNama] = useState("")
   const [tipe, setTipe] = useState("ukm")
   const [join, setJoin] = useState("")
@@ -45,13 +44,20 @@ export default function Customer() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await create.mutateAsync({ nama, tipe, join })
-      toast.success("Customer ditambahkan")
+      if (editId) {
+        await update.mutateAsync({ id: editId, payload: { nama, tipe, join } })
+        toast.success("Customer diperbarui")
+      } else {
+        await create.mutateAsync({ nama, tipe, join })
+        toast.success("Customer ditambahkan")
+      }
       setOpen(false)
+      setEditId(null)
       setNama("")
       setJoin("")
+      setTipe("ukm")
     } catch {
-      toast.error("Gagal menambah customer")
+      toast.error("Gagal menyimpan customer")
     }
   }
 
@@ -78,11 +84,9 @@ export default function Customer() {
           <h1 className="text-2xl font-semibold tracking-tight">Customer</h1>
           <p className="mt-1 text-sm text-muted-foreground">{filtered.length} customer</p>
         </div>
-        {isAdmin && (
-          <Button className="w-full sm:w-auto" onClick={() => setOpen(true)}>
-            <Plus /> Tambah Customer
-          </Button>
-        )}
+        <Button className="w-full sm:w-auto" onClick={() => { setEditId(null); setNama(""); setTipe("ukm"); setJoin(""); setOpen(true) }}>
+          <Plus /> Tambah Customer
+        </Button>
       </div>
 
       <Card>
@@ -114,7 +118,7 @@ export default function Customer() {
                     <TableHead>Join</TableHead>
                     <TableHead>Transaksi</TableHead>
                     <TableHead>Revenue</TableHead>
-                    {isAdmin && <TableHead className="text-right">Aksi</TableHead>}
+                    <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -126,8 +130,16 @@ export default function Customer() {
                       <TableCell>{formatPeriode(c.join)}</TableCell>
                       <TableCell>{c.total_transaksi}</TableCell>
                       <TableCell className="tabular-nums">{formatRupiah(c.total_revenue)}</TableCell>
-                      {isAdmin && (
-                        <TableCell className="text-right">
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" aria-label={`Edit customer ${c.nama}`} onClick={() => { setEditId(c.id); setNama(c.nama); setTipe(c.tipe); setJoin(c.join); setOpen(true) }}>
+                                <Pencil />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Edit customer</TooltipContent>
+                          </Tooltip>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button variant="ghost" size="icon" aria-label={`Hapus customer ${c.nama}`} onClick={() => setDeleteId(c.id)}>
@@ -136,8 +148,8 @@ export default function Customer() {
                             </TooltipTrigger>
                             <TooltipContent>Hapus customer</TooltipContent>
                           </Tooltip>
-                        </TableCell>
-                      )}
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                   {pageRows.length === 0 && (
@@ -171,11 +183,11 @@ export default function Customer() {
         </CardContent>
       </Card>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setEditId(null) }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tambah Customer</DialogTitle>
-            <DialogDescription>ID dibuat otomatis</DialogDescription>
+            <DialogTitle>{editId ? "Edit Customer" : "Tambah Customer"}</DialogTitle>
+            <DialogDescription>{editId ? "Perbarui data customer" : "ID dibuat otomatis"}</DialogDescription>
           </DialogHeader>
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-2">
@@ -196,8 +208,8 @@ export default function Customer() {
               <Input required pattern="\d{4}-\d{2}" value={join} onChange={(e) => setJoin(e.target.value)} placeholder="2026-01" />
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" disabled={create.isPending}>Tambah</Button>
+              <Button type="button" variant="outline" onClick={() => { setOpen(false); setEditId(null) }}>Batal</Button>
+              <Button type="submit" disabled={create.isPending || update.isPending}>{editId ? "Simpan" : "Tambah"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

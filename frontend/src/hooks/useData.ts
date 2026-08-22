@@ -12,6 +12,7 @@ export function useTransaksi() {
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ["transactions"] })
+    queryClient.invalidateQueries({ queryKey: ["customers"] })
     queryClient.invalidateQueries({ queryKey: ["prediksi"] })
     queryClient.invalidateQueries({ queryKey: ["history"] })
   }
@@ -51,10 +52,15 @@ export function useCustomer() {
     onSuccess: invalidateAll,
   })
 
+  const update = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Partial<Customer> }) => api.patch(`/customers/${id}/`, payload),
+    onSuccess: invalidateAll,
+  })
+
   const remove = useMutation({
     mutationFn: (id: string) => api.delete(`/customers/${id}/`),
     onSuccess: invalidateAll,
   })
 
-  return { list, create, remove }
+  return { list, create, update, remove }
 }

@@ -41,9 +41,11 @@ export default function Login() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(255,255,255,0.12),transparent_50%)]" />
 
         <div className="relative flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-foreground/15 text-primary-foreground">
-            <Banknote className="size-6" />
-          </div>
+          <img
+            src="/logo.webp"
+            alt="Logo Seruni Predict"
+            className="size-10 rounded-lg bg-white object-contain"
+          />
           <div className="leading-tight">
             <p className="text-lg font-semibold tracking-tight">Seruni Predict</p>
             <p className="text-sm text-primary-foreground/80">Sistem Informasi Penjualan</p>
@@ -80,9 +82,11 @@ export default function Login() {
       <div className="flex w-full items-center justify-center bg-background p-4 sm:p-6 lg:w-1/2">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Banknote className="size-6" />
-            </div>
+            <img
+              src="/logo.webp"
+              alt="Logo Seruni Predict"
+              className="size-10 rounded-lg object-contain"
+            />
             <div className="leading-tight">
               <p className="text-lg font-semibold tracking-tight">Seruni Predict</p>
               <p className="text-sm text-muted-foreground">Sistem Informasi Penjualan</p>

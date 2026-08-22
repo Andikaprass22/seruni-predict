@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="1000" height="700" fill="#f2f2f2"/>
+
+  <!-- ===== SIDEBAR ===== -->
+  <rect x="0" y="0" width="200" height="700" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <rect x="16" y="20" width="26" height="26" rx="6" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+  <text x="50" y="34" font-size="12.5" font-weight="bold" fill="#000000">Seruni Predict</text>
+  <text x="50" y="47" font-size="8.5" fill="#666666">Sistem Informasi Penjualan</text>
+
+  <text x="16" y="76" font-size="8.5" font-weight="bold" fill="#666666" letter-spacing="2">MENU</text>
+
+  <!-- Dashboard (aktif) -->
+  <rect x="8" y="84" width="184" height="42" rx="6" fill="#111111"/>
+  <rect x="18" y="97" width="16" height="16" rx="3" fill="#111111" stroke="#ffffff" stroke-width="1"/>
+  <text x="44" y="103" font-size="11" font-weight="bold" fill="#ffffff">Dashboard</text>
+  <text x="44" y="117" font-size="8" fill="#bbbbbb">Ringkasan &amp; prediksi</text>
+
+  <!-- Transaksi -->
+  <rect x="8" y="132" width="184" height="42" rx="6" fill="#ffffff" stroke="#bbbbbb" stroke-width="1"/>
+  <rect x="18" y="145" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="44" y="151" font-size="11" fill="#000000">Transaksi</text>
+  <text x="44" y="165" font-size="8" fill="#666666">Input &amp; kelola data</text>
+
+  <!-- Customer -->
+  <rect x="8" y="180" width="184" height="42" rx="6" fill="#ffffff" stroke="#bbbbbb" stroke-width="1"/>
+  <rect x="18" y="193" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="44" y="199" font-size="11" fill="#000000">Customer</text>
+  <text x="44" y="213" font-size="8" fill="#666666">Data pelanggan</text>
+
+  <!-- Riwayat & Evaluasi -->
+  <rect x="8" y="228" width="184" height="42" rx="6" fill="#ffffff" stroke="#bbbbbb" stroke-width="1"/>
+  <rect x="18" y="241" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="44" y="247" font-size="11" fill="#000000">Riwayat &amp; Evaluasi</text>
+  <text x="44" y="261" font-size="8" fill="#666666">Akurasi model</text>
+
+  <line x1="12" y1="636" x2="188" y2="636" stroke="#dddddd" stroke-width="1"/>
+  <circle cx="30" cy="660" r="14" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="52" y="664" font-size="10" fill="#000000">admin@seruni.local</text>
+  <text x="52" y="677" font-size="8.5" fill="#666666">Admin</text>
+  <rect x="168" y="650" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="176" y="662" font-size="11" fill="#000000" text-anchor="middle">⏻</text>
+
+  <!-- ===== HEADER ===== -->
+  <rect x="200" y="0" width="800" height="44" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <rect x="214" y="16" width="14" height="1.5" fill="#000000"/>
+  <rect x="214" y="22" width="14" height="1.5" fill="#000000"/>
+  <rect x="214" y="28" width="14" height="1.5" fill="#000000"/>
+  <text x="240" y="28" font-size="13" font-weight="bold" fill="#000000">Dashboard</text>
+
+  <!-- ===== KONTEN: JUDUL ===== -->
+  <text x="224" y="88" font-size="18" font-weight="bold" fill="#000000">Dashboard</text>
+  <text x="224" y="106" font-size="10.5" fill="#666666">Ringkasan prediksi penjualan bulan berikutnya</text>
+
+  <!-- Tombol Refresh Prediksi -->
+  <rect x="846" y="68" width="138" height="30" rx="4" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+  <circle cx="858" cy="83" r="6" fill="none" stroke="#000000" stroke-width="1.2"/>
+  <path d="M858 79 L858 83 L862 83" fill="none" stroke="#000000" stroke-width="1"/>
+  <text x="872" y="87" font-size="10.5" fill="#000000">Refresh Prediksi</text>
+
+  <!-- ===== KONTEN: STAT BAND ===== -->
+  <rect x="224" y="128" width="752" height="150" rx="6" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+  <text x="240" y="152" font-size="8.5" font-weight="bold" fill="#666666" letter-spacing="1.5">PREDIKSI REVENUE</text>
+  <text x="464" y="152" font-size="9" fill="#666666" text-anchor="end">Jan 2026</text>
+  <text x="240" y="188" font-size="20" font-weight="bold" fill="#000000">Rp 26.905.170</text>
+  <text x="240" y="212" font-size="9.5" fill="#000000">↗ 12,4% vs bulan lalu</text>
+  <text x="240" y="228" font-size="9" fill="#666666">Rentang Rp 23.606.885 - Rp 29.237.182</text>
+  <line x1="476" y1="148" x2="476" y2="258" stroke="#dddddd" stroke-width="1"/>
+
+  <text x="488" y="152" font-size="10.5" fill="#666666">R² test</text>
+  <text x="488" y="188" font-size="20" font-weight="bold" fill="#000000">95,6%</text>
+  <text x="488" y="212" font-size="8.5" fill="#666666">Semakin mendekati 100%,</text>
+  <text x="488" y="224" font-size="8.5" fill="#666666">semakin baik</text>
+  <line x1="640" y1="148" x2="640" y2="258" stroke="#dddddd" stroke-width="1"/>
+
+  <text x="652" y="152" font-size="10.5" fill="#666666">MAPE</text>
+  <text x="652" y="188" font-size="20" font-weight="bold" fill="#000000">1,50%</text>
+  <text x="652" y="212" font-size="8.5" fill="#666666">Rata-rata error prediksi</text>
+  <text x="652" y="224" font-size="8.5" fill="#666666">bulanan</text>
+  <line x1="804" y1="148" x2="804" y2="258" stroke="#dddddd" stroke-width="1"/>
+
+  <text x="816" y="152" font-size="10.5" fill="#666666">Trained s/d</text>
+  <text x="816" y="188" font-size="20" font-weight="bold" fill="#000000">Des 2025</text>
+  <text x="816" y="212" font-size="8.5" fill="#666666">Data terakhir yang</text>
+  <text x="816" y="224" font-size="8.5" fill="#666666">melatih model</text>
+
+  <!-- ===== KONTEN: GRID BAWAH ===== -->
+  <!-- Card chart -->
+  <rect x="224" y="298" width="470" height="330" rx="6" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+  <text x="240" y="322" font-size="12.5" font-weight="bold" fill="#000000">Penjualan Bulanan</text>
+  <text x="240" y="338" font-size="9.5" fill="#666666">Aktual vs prediksi, dalam rupiah</text>
+
+  <rect x="240" y="350" width="438" height="230" fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
+  <line x1="240" y1="396" x2="678" y2="396" stroke="#eeeeee" stroke-width="1"/>
+  <line x1="240" y1="442" x2="678" y2="442" stroke="#eeeeee" stroke-width="1"/>
+  <line x1="240" y1="488" x2="678" y2="488" stroke="#eeeeee" stroke-width="1"/>
+  <line x1="240" y1="534" x2="678" y2="534" stroke="#eeeeee" stroke-width="1"/>
+  <line x1="240" y1="580" x2="678" y2="580" stroke="#eeeeee" stroke-width="1"/>
+  <polyline points="240,570 300,538 360,552 420,486 480,505 540,442 600,472 660,420" fill="none" stroke="#000000" stroke-width="2"/>
+  <polyline points="240,548 300,528 360,506 420,474 480,462 540,432 600,410 660,392" fill="none" stroke="#666666" stroke-width="2" stroke-dasharray="6,4"/>
+
+  <rect x="248" y="600" width="8" height="8" fill="#000000"/>
+  <text x="262" y="607" font-size="9" fill="#000000">Aktual</text>
+  <rect x="312" y="602" width="8" height="6" fill="none" stroke="#666666" stroke-width="1.5" stroke-dasharray="2,1"/>
+  <text x="326" y="607" font-size="9" fill="#000000">Prediksi</text>
+
+  <!-- Card Top 3 Produk -->
+  <rect x="706" y="298" width="270" height="330" rx="6" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+  <text x="722" y="322" font-size="12.5" font-weight="bold" fill="#000000">Top 3 Produk</text>
+  <text x="722" y="338" font-size="9.5" fill="#666666">Periode Jan 2026</text>
+
+  <!-- Baris 1 -->
+  <text x="722" y="366" font-size="10" fill="#666666">01</text>
+  <text x="752" y="366" font-size="10.5" fill="#000000">Banner Flexi</text>
+  <text x="960" y="366" font-size="10" fill="#666666" text-anchor="end">38,2%</text>
+  <rect x="752" y="376" width="180" height="6" rx="3" fill="#eeeeee" stroke="#cccccc" stroke-width="1"/>
+  <rect x="752" y="376" width="135" height="6" rx="3" fill="#000000"/>
+
+  <!-- Baris 2 -->
+  <text x="722" y="410" font-size="10" fill="#666666">02</text>
+  <text x="752" y="410" font-size="10.5" fill="#000000">Stiker Vinyl</text>
+  <text x="960" y="410" font-size="10" fill="#666666" text-anchor="end">27,4%</text>
+  <rect x="752" y="420" width="180" height="6" rx="3" fill="#eeeeee" stroke="#cccccc" stroke-width="1"/>
+  <rect x="752" y="420" width="99" height="6" rx="3" fill="#000000"/>
+
+  <!-- Baris 3 -->
+  <text x="722" y="454" font-size="10" fill="#666666">03</text>
+  <text x="752" y="454" font-size="10.5" fill="#000000">ID Card</text>
+  <text x="960" y="454" font-size="10" fill="#666666" text-anchor="end">15,9%</text>
+  <rect x="752" y="464" width="180" height="6" rx="3" fill="#eeeeee" stroke="#cccccc" stroke-width="1"/>
+  <rect x="752" y="464" width="72" height="6" rx="3" fill="#000000"/>
+
+  <text x="722" y="512" font-size="8" fill="#666666">Prediksi probabilistik: produk terlaris</text>
+  <text x="722" y="523" font-size="8" fill="#666666">diperkirakan ada di antara kandidat di</text>
+  <text x="722" y="534" font-size="8" fill="#666666">atas. Akurasi top-3 ~75%.</text>
+</svg>

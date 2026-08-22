@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="1000" height="700" fill="#f2f2f2"/>
+
+  <!-- ===== SIDEBAR ===== -->
+  <rect x="0" y="0" width="200" height="700" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <rect x="16" y="20" width="26" height="26" rx="6" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+  <text x="50" y="34" font-size="12.5" font-weight="bold" fill="#000000">Seruni Predict</text>
+  <text x="50" y="47" font-size="8.5" fill="#666666">Sistem Informasi Penjualan</text>
+
+  <text x="16" y="76" font-size="8.5" font-weight="bold" fill="#666666" letter-spacing="2">MENU</text>
+
+  <rect x="8" y="84" width="184" height="42" rx="6" fill="#ffffff" stroke="#bbbbbb" stroke-width="1"/>
+  <rect x="18" y="97" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="44" y="103" font-size="11" fill="#000000">Dashboard</text>
+  <text x="44" y="117" font-size="8" fill="#666666">Ringkasan &amp; prediksi</text>
+
+  <rect x="8" y="132" width="184" height="42" rx="6" fill="#111111"/>
+  <rect x="18" y="145" width="16" height="16" rx="3" fill="#111111" stroke="#ffffff" stroke-width="1"/>
+  <text x="44" y="151" font-size="11" font-weight="bold" fill="#ffffff">Transaksi</text>
+  <text x="44" y="165" font-size="8" fill="#bbbbbb">Input &amp; kelola data</text>
+
+  <rect x="8" y="180" width="184" height="42" rx="6" fill="#ffffff" stroke="#bbbbbb" stroke-width="1"/>
+  <rect x="18" y="193" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="44" y="199" font-size="11" fill="#000000">Customer</text>
+  <text x="44" y="213" font-size="8" fill="#666666">Data pelanggan</text>
+
+  <rect x="8" y="228" width="184" height="42" rx="6" fill="#ffffff" stroke="#bbbbbb" stroke-width="1"/>
+  <rect x="18" y="241" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="44" y="247" font-size="11" fill="#000000">Riwayat &amp; Evaluasi</text>
+  <text x="44" y="261" font-size="8" fill="#666666">Akurasi model</text>
+
+  <line x1="12" y1="636" x2="188" y2="636" stroke="#dddddd" stroke-width="1"/>
+  <circle cx="30" cy="660" r="14" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="52" y="664" font-size="10" fill="#000000">admin@seruni.local</text>
+  <text x="52" y="677" font-size="8.5" fill="#666666">Admin</text>
+  <rect x="168" y="650" width="16" height="16" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="176" y="662" font-size="11" fill="#000000" text-anchor="middle">⏻</text>
+
+  <!-- ===== HEADER ===== -->
+  <rect x="200" y="0" width="800" height="44" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <rect x="214" y="16" width="14" height="1.5" fill="#000000"/>
+  <rect x="214" y="22" width="14" height="1.5" fill="#000000"/>
+  <rect x="214" y="28" width="14" height="1.5" fill="#000000"/>
+  <text x="240" y="28" font-size="13" font-weight="bold" fill="#000000">Transaksi</text>
+
+  <!-- ===== KONTEN: JUDUL ===== -->
+  <text x="224" y="88" font-size="18" font-weight="bold" fill="#000000">Transaksi</text>
+  <text x="224" y="106" font-size="10.5" fill="#666666">4.251 transaksi</text>
+
+  <!-- Tombol Tambah Transaksi -->
+  <rect x="836" y="66" width="148" height="32" rx="4" fill="#000000"/>
+  <text x="910" y="86" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">+ Tambah Transaksi</text>
+
+  <!-- ===== KARTU TABEL ===== -->
+  <rect x="224" y="120" width="752" height="560" rx="6" fill="#ffffff" stroke="#000000" stroke-width="1.2"/>
+
+  <!-- Header kartu: judul + cari -->
+  <text x="240" y="148" font-size="12.5" font-weight="bold" fill="#000000">Daftar Transaksi</text>
+  <rect x="780" y="132" width="180" height="26" rx="4" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <circle cx="794" cy="145" r="5" fill="none" stroke="#666666" stroke-width="1"/>
+  <line x1="798" y1="149" x2="802" y2="153" stroke="#666666" stroke-width="1"/>
+  <text x="808" y="149" font-size="9.5" fill="#666666">Cari transaksi...</text>
+
+  <!-- Header tabel -->
+  <line x1="224" y1="170" x2="976" y2="170" stroke="#cccccc" stroke-width="1"/>
+  <text x="240" y="190" font-size="9.5" font-weight="bold" fill="#000000">ID</text>
+  <text x="330" y="190" font-size="9.5" font-weight="bold" fill="#000000">Tanggal</text>
+  <text x="420" y="190" font-size="9.5" font-weight="bold" fill="#000000">Customer</text>
+  <text x="540" y="190" font-size="9.5" font-weight="bold" fill="#000000">Produk</text>
+  <text x="660" y="190" font-size="9.5" font-weight="bold" fill="#000000">Qty</text>
+  <text x="730" y="190" font-size="9.5" font-weight="bold" fill="#000000">Total</text>
+  <text x="946" y="190" font-size="9.5" font-weight="bold" fill="#000000" text-anchor="end">Aksi</text>
+
+  <!-- Baris data -->
+  <g font-size="9.5" fill="#000000">
+    <!-- row 1 -->
+    <text x="240" y="222" font-family="Consolas, monospace" font-size="8.5">TRX-202512001</text>
+    <text x="330" y="222">02 Des 2025</text>
+    <rect x="420" y="210" width="96" height="18" rx="9" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="468" y="223" text-anchor="middle" font-size="8.5">CUST-021</text>
+    <text x="540" y="222">Banner Flexi</text>
+    <text x="660" y="222">2 m</text>
+    <text x="730" y="222">Rp 350.000</text>
+    <rect x="920" y="210" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="931" y="223" font-size="9" text-anchor="middle">✎</text>
+    <rect x="946" y="210" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="957" y="223" font-size="9" text-anchor="middle">🗑</text>
+
+    <!-- row 2 -->
+    <text x="240" y="256" font-family="Consolas, monospace" font-size="8.5">TRX-202512002</text>
+    <text x="330" y="256">03 Des 2025</text>
+    <rect x="420" y="244" width="96" height="18" rx="9" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="468" y="257" text-anchor="middle" font-size="8.5">CUST-005</text>
+    <text x="540" y="256">Stiker Vinyl</text>
+    <text x="660" y="256">5 pcs</text>
+    <text x="730" y="256">Rp 250.000</text>
+    <rect x="920" y="244" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="931" y="257" font-size="9" text-anchor="middle">✎</text>
+    <rect x="946" y="244" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="957" y="257" font-size="9" text-anchor="middle">🗑</text>
+
+    <!-- row 3 -->
+    <text x="240" y="290" font-family="Consolas, monospace" font-size="8.5">TRX-202512003</text>
+    <text x="330" y="290">05 Des 2025</text>
+    <rect x="420" y="278" width="96" height="18" rx="9" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="468" y="291" text-anchor="middle" font-size="8.5">CUST-012</text>
+    <text x="540" y="290">ID Card</text>
+    <text x="660" y="290">50 pcs</text>
+    <text x="730" y="290">Rp 1.000.000</text>
+    <rect x="920" y="278" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="931" y="291" font-size="9" text-anchor="middle">✎</text>
+    <rect x="946" y="278" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="957" y="291" font-size="9" text-anchor="middle">🗑</text>
+
+    <!-- row 4 -->
+    <text x="240" y="324" font-family="Consolas, monospace" font-size="8.5">TRX-202512004</text>
+    <text x="330" y="324">08 Des 2025</text>
+    <rect x="420" y="312" width="96" height="18" rx="9" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="468" y="325" text-anchor="middle" font-size="8.5">CUST-001</text>
+    <text x="540" y="324">Banner Flexi</text>
+    <text x="660" y="324">3 m</text>
+    <text x="730" y="324">Rp 525.000</text>
+    <rect x="920" y="312" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="931" y="325" font-size="9" text-anchor="middle">✎</text>
+    <rect x="946" y="312" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="957" y="325" font-size="9" text-anchor="middle">🗑</text>
+
+    <!-- row 5 -->
+    <text x="240" y="358" font-family="Consolas, monospace" font-size="8.5">TRX-202512005</text>
+    <text x="330" y="358">10 Des 2025</text>
+    <rect x="420" y="346" width="96" height="18" rx="9" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="468" y="359" text-anchor="middle" font-size="8.5">CUST-018</text>
+    <text x="540" y="358">Kartu Nama</text>
+    <text x="660" y="358">2 box</text>
+    <text x="730" y="358">Rp 200.000</text>
+    <rect x="920" y="346" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="931" y="359" font-size="9" text-anchor="middle">✎</text>
+    <rect x="946" y="346" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="957" y="359" font-size="9" text-anchor="middle">🗑</text>
+
+    <!-- row 6 -->
+    <text x="240" y="392" font-family="Consolas, monospace" font-size="8.5">TRX-202512006</text>
+    <text x="330" y="392">12 Des 2025</text>
+    <rect x="420" y="380" width="96" height="18" rx="9" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="468" y="393" text-anchor="middle" font-size="8.5">CUST-007</text>
+    <text x="540" y="392">Banner Flexi</text>
+    <text x="660" y="392">4 m</text>
+    <text x="730" y="392">Rp 700.000</text>
+    <rect x="920" y="380" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="931" y="393" font-size="9" text-anchor="middle">✎</text>
+    <rect x="946" y="380" width="22" height="18" rx="3" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="957" y="393" font-size="9" text-anchor="middle">🗑</text>
+  </g>
+
+  <!-- Footer tabel: info halaman + pagination -->
+  <line x1="224" y1="640" x2="976" y2="640" stroke="#eeeeee" stroke-width="1"/>
+  <text x="240" y="660" font-size="9.5" fill="#666666">Menampilkan 1 - 10 dari 4.251</text>
+  <rect x="780" y="648" width="84" height="26" rx="4" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="822" y="666" font-size="9.5" fill="#000000" text-anchor="middle">Sebelumnya</text>
+  <rect x="868" y="648" width="84" height="26" rx="4" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+  <text x="910" y="666" font-size="9.5" fill="#000000" text-anchor="middle">Berikutnya</text>
+</svg>

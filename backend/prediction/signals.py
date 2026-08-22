@@ -15,9 +15,10 @@ _DISABLED = os.environ.get("SERUNI_DISABLE_AUTO_PREDICT", "") == "1"
 
 
 def _is_management_context():
-    # Skip saat management command / script (bukan request server)
-    argv0 = os.path.basename(sys.argv[0])
-    return "manage.py" in argv0 or "manage.py" in sys.argv[0] or sys.argv[0].endswith(".py") and "manage" not in sys.argv[0]
+    # Skip hanya untuk command maintenance yang tidak lewat HTTP (migrate/seed/shell)
+    # runserver HARUS tetap jalan — jangan skip auto-predict di server.
+    argv = " ".join(sys.argv)
+    return any(k in argv for k in ("migrate", "seed_data", "collectstatic", "shell"))
 
 
 def _schedule_predict():
@@ -51,10 +52,17 @@ def _recompute_customer_totals():
     from sales.models import Customer
 
     agg = Transaction.objects.values("customer_id").annotate(n=Count("id"), rev=Sum("total"))
+    seen = set()
     for row in agg:
+        seen.add(row["customer_id"])
         Customer.objects.filter(id=row["customer_id"]).update(
-            total_transaksi=row["n"], total_revenue=row["rev"]
+            total_transaksi=row["n"], total_revenue=row["rev"] or 0.0
         )
+    # Customer yang sudah tidak punya transaksi -> 0 kan agar tidak stale
+    if seen:
+        Customer.objects.exclude(id__in=seen).update(total_transaksi=0, total_revenue=0.0)
+    else:
+        Customer.objects.all().update(total_transaksi=0, total_revenue=0.0)
 
 
 @receiver(post_save, sender=Transaction)

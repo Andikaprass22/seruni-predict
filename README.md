@@ -22,12 +22,9 @@ python manage.py runserver      # http://localhost:8000
 ```
 
 Akun default: `admin@seruni.local` / `admin123` (bisa diubah di `.env`).
+Sistem menggunakan **Single Admin** — seluruh fitur hanya untuk Admin.
 
-Buat user staff:
-
-```bash
-python manage.py create_staff_user staff@seruni.local --password staff123
-```
+> `create_staff_user` adalah legacy dan tidak disarankan (akan menampilkan warning).
 
 ## Menjalankan Frontend
 

@@ -19,7 +19,30 @@ class SalesApiTest(TestCase):
         return {"HTTP_AUTHORIZATION": f"Bearer {resp.json()['access']}"}
 
     def test_staff_can_create_transaction(self):
+        # Single Admin: staff tidak boleh create (legacy test diperbarui)
         h = self._auth(self.staff)
+        resp = self.client.post(
+            "/api/transactions/",
+            {
+                "tanggal": "2026-02-03",
+                "customer": "CUST-001",
+                "keterangan": "Cetak Banner",
+                "qty": 2,
+                "satuan": "m",
+                "harga": 100.0,
+                "total": 200.0,
+                "bulan": "Februari",
+                "tahun": 2026,
+                "tipe_customer": "ukm",
+                "tipe_produk": "Banner Flexi",
+            },
+            content_type="application/json",
+            **h,
+        )
+        self.assertEqual(resp.status_code, 403, resp.content)
+
+    def test_admin_can_create_transaction(self):
+        h = self._auth(self.admin)
         resp = self.client.post(
             "/api/transactions/",
             {
@@ -65,7 +88,7 @@ class SalesApiTest(TestCase):
         self.assertEqual(trx.total, 150.0)
 
     def test_invalid_total_rejected(self):
-        h = self._auth(self.staff)
+        h = self._auth(self.admin)
         resp = self.client.post(
             "/api/transactions/",
             {
